@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>天平啄木</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00FF00',
+            secondary: '#000000'
+          },
+          borderRadius: {
+            'none': '0px',
+            'sm': '2px',
+            DEFAULT: '4px',
+            'md': '8px',
+            'lg': '12px',
+            'xl': '16px',
+            '2xl': '20px',
+            '3xl': '24px',
+            'full': '9999px',
+            'button': '4px'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #000000;
+      min-height: 1024px;
+      color: #00FF00;
+      margin: 0;
+      overflow: hidden;
+      padding-top: 3rem;
+      box-sizing: border-box;
+    }
+    .matrix-bg {
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      background-color: #000000;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0,255,0,0.2);
+      z-index: 1;
+    }
+    .dropdown-trigger[aria-expanded="true"] .dropdown {
+      display: block;
+    }
+    .dropdown-trigger:hover .dropdown {
+      display: block;
+    }
+    .nav-link {
+      position: relative;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      color: #ffffff;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 50%;
+      background-color: #00FF00;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+      left: 0;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: calc(100vh - 3rem - 2.5rem);
+    }
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 3rem;
+      background: rgba(30, 30, 30, 0.95);
+      color: #fff; display: flex; align-items: center;
+      padding: 0 2rem; font-size: 1.25rem; z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      letter-spacing: 2px; user-select: none;
+    }
+    .navbar ul {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; align-items: center;
+      width: 100%;
+      transition: max-height 0.3s;
+    }
+    .navbar li {
+      margin-right: 2rem; position: relative;
+    }
+    .navbar li.active,
+    .navbar li:focus {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    .navbar li.more { cursor: pointer; }
+    .footer {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: rgba(30, 30, 30, 0.95); color: #fff;
+      text-align: center; font-size: 1rem;
+      padding: 0.5rem 0 0.25rem 0; z-index: 10;
+      letter-spacing: 1px; user-select: none;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    }
+    .footer span {
+      display: block; font-size: 0.9rem; color: #aaa;
+      margin-top: 2px; letter-spacing: 2px;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 2rem; height: 2rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      z-index: 30;
+    }
+    .hamburger span {
+      height: 3px; width: 100%;
+      background: #fff; margin: 3px 0;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    @media (max-width: 900px) {
+      .navbar ul {
+        position: fixed;
+        top: 3rem; left: 0; right: 0;
+        background: rgba(30,30,30,0.98);
+        flex-direction: column;
+        align-items: flex-start;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s;
+      }
+      .navbar ul.open {
+        max-height: 80vh;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      }
+      .navbar li { margin: 1rem 0 1rem 2rem; }
+      .hamburger { display: flex; }
+      body { padding-top: 3rem; }
+      canvas { height: calc(100vh - 3rem - 2.5rem); }
+    }
+    @media (max-width: 600px) {
+      html { font-size: 14px; }
+      .navbar { font-size: 1rem; padding: 0 1rem; height: 2.5rem; }
+      .footer { font-size: 0.9rem; padding: 0.3rem 0 0.15rem 0; }
+      .footer span { font-size: 0.8rem; }
+      body { padding-top: 2.5rem; }
+      canvas { height: calc(100vh - 2.5rem - 2rem); }
+      .navbar ul { top: 2.5rem; }
+    }
+    /* 动画点数开关样式 */
+    .sphere-toggle {
+      position: fixed;
+      right: 1rem;
+      bottom: 3.5rem;
+      z-index: 50;
+      background: rgba(30,30,30,0.95);
+      color: #00FF00;
+      border: 1px solid #00FF00;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .sphere-toggle:hover {
+      background: #222;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center">
+  <nav class="w-full bg-secondary fixed top-0 z-50 navbar">
+    <div class="max-w-[1440px] mx-auto px-6 py-4 flex justify-start items-center">
+      <div class="hamburger" tabindex="0" aria-label="展开菜单" aria-controls="mainmenu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </div>
+      <ul id="mainmenu" class="flex space-x-8 items-center whitespace-nowrap">
+        
+        <li class="nav-link active" tabindex="0">天平啄木鸟的主页</li>
+        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          案情简介
+            <div class="dropdown" role="menu">
+            <a href="案情简介.html" class="p-3 hover:bg-gray-900 whitespace-nowrap block" role="menuitem">案情简介</a>
+            <a href="案件时间轴.html" class="p-3 hover:bg-gray-900 whitespace-nowrap block" role="menuitem">案件时间轴</a>
+        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          证据清单
+          <div class="dropdown" role="menu">
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">裁判证据清单</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">王整理的证据</div>
+        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          案件脉络
+          <div class="dropdown" role="menu">
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">案发经过</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">投案经过</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">送羁经过</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">羁押侦查</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">羁押侦查</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">审查起诉</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">审理审判</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">庭审经过</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">有关文书</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">问题清单</div>
+          </div>
+        </li>
+        <li class="nav-link whitespace-nowrap" tabindex="0">释后发现</li>
+        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          维权走访
+          <div class="dropdown" role="menu">
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访二审法院</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访一审法院</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访派出所</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访公安局</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访检察院</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">网上国家信访局</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">网上最高法</div>
+            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">院长信箱</div>
+          </div>
+          </li>        <li class="nav-link dropdown-trigger more whitespace-nowrap" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          再审申请书
+          <div class="dropdown" id="dropdownMenu" role="menu">
+            <a href="手稿/再审书5.15-1107珍藏版.html" class="p-3 hover:bg-gray-900" role="menuitem">再审请求</a>
+            <div class="p-3 hover:bg-gray-900" role="menuitem">证据清单</div>
+            <div class="p-3 hover:bg-gray-900" role="menuitem">援引法条</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+    <!-- 左侧导航栏 - 桌面端显示 -->
+     
+    <nav id="sidebar" class="fixed left-0 z-40 bg-red-600 text-white shadow-lg w-64 transition-transform duration-300 ease-in-out
+      top-[3rem] h-[calc(100vh-3rem-2.5rem)] lg:translate-x-0 -translate-x-full
+      lg:top-[3rem] lg:h-[calc(100vh-3rem-2.5rem)]">
+      <div class="p-6 h-full flex flex-col">
+        <h2 class="text-xl font-bold mb-6 hidden lg:block text-white">本站简介：</h2>
+        <ul class="space-y-1 flex-1 text-xs sm:text-sm leading-relaxed overflow-y-auto max-h-[calc(100vh-7rem)] pr-2 bg-black text-white-400 rounded-md pl-2">
+            <li>
+              <h2 class="text-base sm:text-lg font-bold mb-4 text-red-300">你好，欢迎来到天平啄木主页！</h2>
+              <p class="mb-4">
+              来这儿，你能录着一起真实的刑事案件——当事人被错判“抢劫罪”入狱四年，出狱后死磕找证据喊冤。咱不聊大道理，就摆实实在在的“坑”：派出所超期关押、法院开庭没让看全证据、连裁定书编号都能搞错……这些看似“不起眼”的程序问题，差点把一个普通人的生活砸得稀碎。
+              </p>
+
+              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">来这儿，你能看到啥“关键细节”？</h3>
+              <div class="mb-4">
+              <p><strong>证据有多重要</strong>：当事人案发前两个月就买了同款手机，却硬被认定“抢劫”；派出所连夜审讯时留下的伤痕，全写在体检报告里，却在法庭上被“忽略”。</p>
+              <p><strong>　　程序漏洞长啥样</strong>：比如“24小时内必须送看守所”的规定被拖延5小时、家人始终没收到拘留通知书、庭审时关键监控视频“失踪”……这些你以为“电视剧里才有的情节”，真真实实在现实中发生了。</p>
+              </div>
+
+              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">　　对咱普通人有啥用？</h3>
+              <p class="mb-4">
+              就算一辈子不打官司，看懂这些也能少吃亏：<br>
+              ✅ 警察抓人后，家人收不到拘留通知？立刻问“按《刑事诉讼法》第85条，为啥不通知？”（记住：除了国家安全案件，24小时内必须通知家属）；<br>
+              ✅ 开庭时不让看证据、律师没帮你说话？这属于“剥夺质证权”，当场就能要求核对证据；<br>
+              ✅ 判决书下来觉得冤？别放弃！哪怕过了好几年，发现新证据或程序错误，一样能走法律程序启动维权，纠正错误。
+              </p>
+
+              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">为啥要讲这些“糟心事”？</h3>
+              <p class="mb-4">
+              因为这些“程序坑”离我们并不远：民事纠纷、邻里矛盾、甚至路上被误会……万一遇到，每个细节都可能影响结果。比如：<br>
+              👉 关键证据（聊天记录、监控、医院报告）一定要自己存好，别信“法院会查清楚”；<br>
+              👉 对方说“按规定办”时，多问一句“哪条规定？请给我看文件”（比如《法官行为规范》第53条要求“引用法律必须写清条款项”）；<br>
+              👉 觉得处理不公，别怕“麻烦”，国家给咱留了信访、申诉、抗诉等多条路，只要证据硬，总能讨说法。
+              </p>
+
+              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">最后说句实在话：</h3>
+              <p class="mb-4">
+              咱老百姓不懂法律没关系，但得知道自己有啥权利。这里的每个故事、每条提醒，都是从“踩坑经历”里扒出来的干货。你花10分钟看看，或许能帮自己或亲友避个大雷；顺手转发出去，让更多人知道“遇到事别慌，法律程序里藏着公平的细节”。
+              </p>
+              <p class="mb-4">
+              感谢停留，愿每个普通人都能享受阳光，感受公平正义。
+              </p>
+            </a>
+          </li>
+        </ul>
+        </ul>
+      </div>
+    </nav>
+
+  <canvas id="sphereCanvas"></canvas>
+  <button class="sphere-toggle" id="sphereToggle" aria-pressed="false" title="切换动画复杂度">高性能模式</button>
+
+  <footer class="w-full bg-secondary mt-auto footer">
+    <div class="max-w-[1440px] mx-auto px-6 py-4 text-center">
+      © 2025 天平啄木保留所有权利  
+      <span>啄一木而醒全林</span>
+    </div>
+  </footer>
+
+  <script>
+    // 导航交互与无障碍
+    const hamburger = document.querySelector('.hamburger');
+    const mainmenu = document.getElementById('mainmenu');
+    const more = document.querySelector('.more');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+      trigger.addEventListener('mouseenter', () => {
+        trigger.setAttribute('aria-expanded', 'true');
+      });
+      trigger.addEventListener('mouseleave', () => {
+        trigger.setAttribute('aria-expanded', 'false');
+      });
+      trigger.addEventListener('focus', () => {
+        trigger.setAttribute('aria-expanded', 'true');
+      });
+      trigger.addEventListener('blur', () => {
+        trigger.setAttribute('aria-expanded', 'false');
+      });
+      trigger.addEventListener('click', (e) => {
+        // 仅在移动端点击展开
+        if (window.innerWidth < 900) {
+          e.stopPropagation();
+          const expanded = trigger.getAttribute('aria-expanded') === 'true';
+          trigger.setAttribute('aria-expanded', !expanded);
+        }
+      });
+    });
+
+    if (hamburger) {
+      hamburger.addEventListener('click', () => {
+        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', !isExpanded);
+        mainmenu.classList.toggle('open');
+        if (more && dropdownMenu) {
+          more.setAttribute('aria-expanded', 'false');
+          dropdownMenu.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    document.querySelectorAll('.nav-link:not(.more)').forEach(item => {
+      item.addEventListener('click', () => {
+        if (more && dropdownMenu) {
+          more.setAttribute('aria-expanded', 'false');
+          dropdownMenu.setAttribute('aria-expanded', 'false');
+        }
+        if (window.innerWidth < 900 && hamburger && mainmenu) {
+          hamburger.setAttribute('aria-expanded', 'false');
+          mainmenu.classList.remove('open');
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (more && dropdownMenu && !more.contains(e.target)) {
+        more.setAttribute('aria-expanded', 'false');
+        dropdownMenu.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    if (dropdownMenu) {
+      dropdownMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    // 动画核心逻辑
+    const canvas = document.getElementById('sphereCanvas');
+    const ctx = canvas.getContext('2d');
+    const navbar = document.querySelector('.navbar');
+    const footer = document.querySelector('.footer');
+    const sphereToggle = document.getElementById('sphereToggle');
+
+    // 动画点数自适应
+    let highPerformance = false;
+    let numPoints = 200;
+    function getAdaptiveNumPoints() {
+      if (highPerformance) return 80;
+      if (window.innerWidth < 600) return 80;
+      if (window.devicePixelRatio > 1.5) return 120;
+      return 200;
+    }
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const navbarHeight = navbar.offsetHeight;
+      const footerHeight = footer.offsetHeight;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = (window.innerHeight - navbarHeight - footerHeight) * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = (window.innerHeight - navbarHeight - footerHeight) + 'px';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      centerX = window.innerWidth / 2;
+      centerY = (window.innerHeight - navbarHeight - footerHeight) / 2;
+    }
+
+    const numbers = ['天', '平', '啄', '木', '鸟'];
+    const points = [];
+    let centerX, centerY;
+    let radius, rotationSpeed = 0.01;
+
+    function generatePoints() {
+      points.length = 0;
+      numPoints = getAdaptiveNumPoints();
+      radius = Math.min(window.innerWidth, window.innerHeight - navbar.offsetHeight - footer.offsetHeight) * 0.3;
+      for (let i = 0; i < numPoints; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
+        points.push({
+          x, y, z,
+          number: numbers[i % numbers.length],
+        });
+      }
+    }
+
+    // 定义每个字的颜色
+    function getColorForChar(char, alpha) {
+      switch (char) {
+        case '天': return `rgba(255,0,0,${alpha})`;      // 红色
+        case '啄': return `rgba(255,255,0,${alpha})`;    // 黄色
+        case '木': return `rgba(255,255,255,${alpha})`;  // 白色
+        case '鸟': return `rgba(255,215,0,${alpha})`;    // 金色
+        default:   return `rgba(0,255,0,${alpha})`;      // 绿色（平字）
+      }
+    }
+
+    let angleX = 0, angleY = 0;
+    let animationId = null;
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const rotatedPoints = points.map(point => {
+        const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+        const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+        const rotatedY = point.y * cosX - point.z * sinX;
+        const rotatedZ = point.y * sinX + point.z * cosX;
+        const finalX = point.x * cosY - rotatedZ * sinY;
+        const finalZ = point.x * sinY + rotatedZ * cosY;
+        return { x: finalX, y: rotatedY, z: finalZ, number: point.number };
+      });
+      rotatedPoints.sort((a, b) => b.z - a.z);
+      rotatedPoints.forEach(point => {
+        const scale = 500 / (500 + point.z);
+        const screenX = centerX + point.x * scale;
+        const screenY = centerY + point.y * scale;
+        ctx.font = `${16 * scale}px monospace`;
+        let alpha = Math.max(0.2, scale);
+        ctx.fillStyle = getColorForChar(point.number, alpha);
+        ctx.textAlign = 'center';
+        ctx.fillText(point.number, screenX, screenY);
+      });
+      angleX += rotationSpeed;
+      angleY += rotationSpeed;
+      animationId = requestAnimationFrame(render);
+    }
+
+    function restartSphere() {
+      if (animationId) cancelAnimationFrame(animationId);
+      resizeCanvas();
+      generatePoints();
+      render();
+    }
+
+    window.addEventListener('resize', restartSphere);
+
+    // 动画复杂度切换
+    sphereToggle.addEventListener('click', () => {
+      highPerformance = !highPerformance;
+      sphereToggle.setAttribute('aria-pressed', highPerformance ? 'true' : 'false');
+      sphereToggle.textContent = highPerformance ? '低复杂度模式' : '高性能模式';
+      restartSphere();
+    });
+
+    // 初始化
+    restartSphere();
+  </script>
+</body>
+</html>
