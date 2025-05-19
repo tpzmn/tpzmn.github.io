@@ -1,500 +1,571 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>天平啄木鸟</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#00FF00',
-            secondary: '#000000'
-          },
-          borderRadius: {
-            'none': '0px',
-            'sm': '2px',
-            DEFAULT: '4px',
-            'md': '8px',
-            'lg': '12px',
-            'xl': '16px',
-            '2xl': '20px',
-            '3xl': '24px',
-            'full': '9999px',
-            'button': '4px'
-          }
+    <meta charset="UTF-8">
+    <title>公安进程管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
         }
-      }
-    }
-  </script>
-  <style>
-    body {
-      font-family: 'Noto Sans SC', sans-serif;
-      background-color: #000000;
-      min-height: 1024px;
-      color: #00FF00;
-      margin: 0;
-      overflow: hidden;
-      padding-top: 3rem;
-      box-sizing: border-box;
-    }
-    .matrix-bg {
-      font-family: monospace;
-      font-size: 14px;
-      line-height: 1;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .dropdown {
-      display: none;
-      position: absolute;
-      background-color: #000000;
-      min-width: 160px;
-      box-shadow: 0 8px 16px rgba(0,255,0,0.2);
-      z-index: 1;
-    }
-    .dropdown-trigger[aria-expanded="true"] .dropdown {
-      display: block;
-    }
-    .dropdown-trigger:hover .dropdown {
-      display: block;
-    }
-    .nav-link {
-      position: relative;
-      cursor: pointer;
-    }
-    .nav-link:hover {
-      color: #ffffff;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: -4px;
-      left: 50%;
-      background-color: #00FF00;
-      transition: all 0.3s ease;
-    }
-    .nav-link:hover::after {
-      width: 100%;
-      left: 0;
-    }
-    canvas {
-      display: block;
-      width: 100vw;
-      height: calc(100vh - 3rem - 2.5rem);
-    }
-    .navbar {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 3rem;
-      background: rgba(30, 30, 30, 0.95);
-      color: #fff; display: flex; align-items: center;
-      padding: 0 2rem; font-size: 1.25rem; z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      letter-spacing: 2px; user-select: none;
-    }
-    .navbar ul {
-      list-style: none; margin: 0; padding: 0;
-      display: flex; align-items: center;
-      width: 100%;
-      transition: max-height 0.3s;
-    }
-    .navbar li {
-      margin-right: 2rem; position: relative;
-    }
-    .navbar li.active,
-    .navbar li:focus {
-      color: #00ff00;
-      font-weight: bold;
-    }
-    .navbar li.more { cursor: pointer; }
-    .footer {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(30, 30, 30, 0.95); color: #fff;
-      text-align: center; font-size: 1rem;
-      padding: 0.5rem 0 0.25rem 0; z-index: 10;
-      letter-spacing: 1px; user-select: none;
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
-    }
-    .footer span {
-      display: block; font-size: 0.9rem; color: #aaa;
-      margin-top: 2px; letter-spacing: 2px;
-    }
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      width: 2rem; height: 2rem;
-      margin-right: 1rem;
-      cursor: pointer;
-      z-index: 30;
-    }
-    .hamburger span {
-      height: 3px; width: 100%;
-      background: #fff; margin: 3px 0;
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
-    @media (max-width: 900px) {
-      .navbar ul {
-        position: fixed;
-        top: 3rem; left: 0; right: 0;
-        background: rgba(30,30,30,0.98);
-        flex-direction: column;
-        align-items: flex-start;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s;
-      }
-      .navbar ul.open {
-        max-height: 80vh;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-      }
-      .navbar li { margin: 1rem 0 1rem 2rem; }
-      .hamburger { display: flex; }
-      body { padding-top: 3rem; }
-      canvas { height: calc(100vh - 3rem - 2.5rem); }
-    }
-    @media (max-width: 600px) {
-      html { font-size: 14px; }
-      .navbar { font-size: 1rem; padding: 0 1rem; height: 2.5rem; }
-      .footer { font-size: 0.9rem; padding: 0.3rem 0 0.15rem 0; }
-      .footer span { font-size: 0.8rem; }
-      body { padding-top: 2.5rem; }
-      canvas { height: calc(100vh - 2.5rem - 2rem); }
-      .navbar ul { top: 2.5rem; }
-    }
-    /* 动画点数开关样式 */
-    .sphere-toggle {
-      position: fixed;
-      right: 1rem;
-      bottom: 3.5rem;
-      z-index: 50;
-      background: rgba(30,30,30,0.95);
-      color: #00FF00;
-      border: 1px solid #00FF00;
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-    }
-    .sphere-toggle:hover {
-      background: #222;
-    }
-  </style>
+
+body {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    display: flex;
+    min-height: 100vh;
+    height: 100vh;           /* 新增 */
+    overflow: hidden;        /* 新增，防止body整体滚动 */
+}
+
+/* 左侧导航目录 */
+.nav-directory {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 30px 20px;
+    border-right: 1px solid rgba(68,68,68,0.3);
+    background: rgba(30, 22, 54, 0.6);
+    backdrop-filter: blur(2px);
+    height: 100vh;           /* 新增，高度占满视口 */
+    overflow-y: auto;        /* 新增，独立滚动条 */
+    position: sticky;        /* 新增，固定在左侧 */
+    top: 0;                  /* 新增 */
+}
+
+/* 中间正文区域 */
+.main-content {
+    flex-grow: 1;
+    padding: 30px 40px;
+    overflow-y: auto;
+    min-width: 400px;
+    background: rgba(25, 30, 60, 0.5);
+    backdrop-filter: blur(2px);
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 4px 32px 0 rgba(40,40,80,0.12);
+    height: 100vh;           /* 新增，高度占满视口 */
+}
+        /* 目录样式 */
+        .date-item {
+            margin: 15px 0;
+            border-bottom: 1px solid rgba(68,68,68,0.3);
+        }
+
+        .summary-title {
+            font-size: 1.1em;
+            color: #ffb6ff;
+            cursor: pointer;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .summary-title:hover {
+            color: #fff;
+        }
+
+        .summary-title .arrow {
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 1.2em;
+            margin-left: 8px;
+        }
+
+        details[open] .summary-title .arrow {
+            transform: rotate(90deg);
+        }
+
+        .details-content {
+            padding: 10px 0;
+            font-size: 0.95em;
+            color: #c3cfff;
+        }
+
+        .event-item {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #ffb6ff;
+            font-weight: 500;
+        }
+
+        /* 正文标题样式 */
+        .main-content h1 {
+            font-size: 2em;
+            color: #b388ff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .main-content h2 {
+            color: #80d0ff;
+            margin-bottom: 12px;
+        }
+
+        .main-content p {
+            line-height: 1.8;
+            color: #e0e7ff;
+            margin-bottom: 15px;
+        }
+
+        /* 锚点跳转样式 */
+        [id^="section-"]:before {
+            content: "";
+            display: block;
+            height: 60px;
+            margin: -60px 0 0;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+
+            .nav-directory {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(68,68,68,0.3);
+                border-radius: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+                border-radius: 0 0 12px 12px;
+            }
+        }
+    </style>
 </head>
-<body class="flex flex-col items-center">
-  <nav class="w-full bg-secondary fixed top-0 z-50 navbar">
-    <div class="max-w-[1440px] mx-auto px-6 py-4 flex justify-start items-center">
-      <div class="hamburger" tabindex="0" aria-label="展开菜单" aria-controls="mainmenu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </div>
-      <ul id="mainmenu" class="flex space-x-8 items-center whitespace-nowrap">
+<body>
+    <!-- 左侧导航目录 -->
+    <aside class="nav-directory">
+             <h1>浏览导航栏</h1>
+        <details class="date-item" id="20241113 9时左右">
+            <summary class="summary-title">
+                <a href="#section-20241113 9时左右" style="color:inherit;text-decoration:none;">2024年11月13日 9时许</a>
+                <span class="arrow">▶</span>
+            </summary>
+            <div class="details-content">
+                <div class="event-item">王贵平的随身物品没有一件成功领取</div>
+            </div>
+        </details>
+
+        <details class="date-item" id="20241113 13:16">
+            <summary class="summary-title">
+                <a href="#section-20241113 13:16" style="color:inherit;text-decoration:none;">2024年11月13日13:16</a>
+                <span class="arrow">▶</span>
+            </summary>
+            <div class="details-content">
+                <div class="event-item">通过贵阳公安警务督察系统平台举报</div>
+                <div class="event-item">无回应</div>
+
+            </div>
+        </details>
+        <details class="date-item" id="20241113 15时许">
+            <summary class="summary-title">
+                <a href="#section-20241113 15时许" style="color:inherit;text-decoration:none;">2024年11月13日15时许</a>
+                <span class="arrow">▶</span>
+            </summary>
+            <div class="details-content">
+                <div class="event-item">到贵阳市公安局云岩分局举报毓秀路派出所</div>
+
+            </div>
+        </details>
+        <details class="date-item" id="2024年11月13日 16:06:15">
+            <summary class="summary-title">
+                <a href="#section-2024年11月13日 16:06:15" style="color:inherit;text-decoration:none;">2024年11月13日 16:06:15</a>
+                <span class="arrow">▶</span>
+            </summary>
+            <div class="details-content">
+                <div class="event-item">返回毓秀路派出所申请查阅缺失的卷宗资料</div>
+
+            </div>
+        </details>
+        <details class="date-item" id="20241216">
+            <summary class="summary-title">
+                <a href="#section-2024年12月16日" style="color:inherit;text-decoration:none;">2024年12月16日11:37:34</a>
+                <span class="arrow">▶</span>
+            </summary>
+            <div class="details-content">
+                <div class="event-item">到贵阳市公安局云岩分局举报毓秀路派出所</div>
+
+            </div>
+        </details>
+
+
+        <!-- 其他日期节点 -->
+    </aside>
+
+    <!-- 中间正文区域 -->
+    <main class="main-content">
+        <h1>公安进程详细记录</h1>
+
+        <section id="section-20241113 9时左右">
+            <h2>2024年11月13日 9时左右</h2>
+            <p style="text-indent:2em;">王贵平达到贵阳毓秀路派出所，准备领取2019年1月20日18时50分许，被捕警在大十字广场河西路边的公安岗亭扣留的个人随身物品，接待民警编号为X00028。结果该民警拿出登记簿，上面只显示一张王贵平的工商银行卡被登记，显示有王贵平的署名捺印。王贵平称还有其它物品，该民警回应只有找实际办案民警，至于银行卡的问题，该民警的回答是不知道放哪里了，找不到了。最后王贵平什么都没领到。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题1：</b>银行卡是怎么来的，检查、扣押等相关视频在哪里？问题指向当日2位捕警以及其执法记录仪视频。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题2：</b>能证明指控证物OPPO A5手机来源的视频就是公安岗亭内的监控和当日抓捕民警的执法记录仪视频在庭审以及2024年11月5日王贵平拷贝的“正卷1”中缺失，指控证物OPPO A5手机是虚构事实或凭空捏造让人生疑。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题3：</b>抓捕过程的公安岗亭监控视频和抓捕民警的执法记录仪视频可直接证明王贵平送达看守所时右眼部、左背部、双手背的伤情是派出所工作人员所为还是案发时打斗受伤，但是这些关键证据缺失，系故意隐匿或其它原因没有出示或没有移送，让人难以信访。</p>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
+            <p style="text-indent:2em;">
+                《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
+            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
+        </ul>
+        </ul>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
+
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
         
-        <li class="nav-link active" tabindex="0">天平啄木鸟的主页</li>
-        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          案情简介
-            <div class="dropdown" role="menu">
-            <a href="案情简介.html" class="p-3 hover:bg-gray-900 whitespace-nowrap block" role="menuitem">案情简介</a>
-            <a href="案件时间轴.html" class="p-3 hover:bg-gray-900 whitespace-nowrap block" role="menuitem">案件时间轴</a>
-        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          证据清单
-          <div class="dropdown" role="menu">
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">裁判证据清单</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">王整理的证据</div>
-        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          案件脉络
-          <div class="dropdown" role="menu">
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">案发经过</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">投案经过</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">送羁经过</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">羁押侦查</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">羁押侦查</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">审查起诉</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">审理审判</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">庭审经过</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">有关文书</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">问题清单</div>
-          </div>
-        </li>
-        <li class="nav-link whitespace-nowrap" tabindex="0">释后发现</li>
-        <li class="nav-link dropdown-trigger" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          维权走访
-          <div class="dropdown" role="menu">
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访二审法院</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访一审法院</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访派出所</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访公安局</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">走访检察院</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">网上国家信访局</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">网上最高法</div>
-            <div class="p-3 hover:bg-gray-900 whitespace-nowrap" role="menuitem">院长信箱</div>
-          </div>
-          </li>        <li class="nav-link dropdown-trigger more whitespace-nowrap" tabindex="0" aria-haspopup="true" aria-expanded="false">
-          再审申请书
-          <div class="dropdown" id="dropdownMenu" role="menu">
-            <a href="手稿/再审书5.15-1107珍藏版.html" class="p-3 hover:bg-gray-900" role="menuitem">再审请求</a>
-            <div class="p-3 hover:bg-gray-900" role="menuitem">证据清单</div>
-            <div class="p-3 hover:bg-gray-900" role="menuitem">援引法条</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-    <!-- 左侧导航栏 - 桌面端显示 -->
-     
-    <nav id="sidebar" class="fixed left-0 z-40 bg-red-600 text-white shadow-lg w-64 transition-transform duration-300 ease-in-out
-      top-[3rem] h-[calc(100vh-3rem-2.5rem)] lg:translate-x-0 -translate-x-full
-      lg:top-[3rem] lg:h-[calc(100vh-3rem-2.5rem)]">
-      <div class="p-6 h-full flex flex-col">
-        <h2 class="text-xl font-bold mb-6 hidden lg:block text-white">本站简介：</h2>
-        <ul class="space-y-1 flex-1 text-xs sm:text-sm leading-relaxed overflow-y-auto max-h-[calc(100vh-7rem)] pr-2 bg-black text-white-400 rounded-md pl-2">
-            <li>
-              <h2 class="text-base sm:text-lg font-bold mb-4 text-red-300">你好，欢迎来到天平啄木主页！</h2>
-              <p class="mb-4">
-              来这儿，你能录着一起真实的刑事案件——当事人被错判“抢劫罪”入狱四年，出狱后死磕找证据喊冤。咱不聊大道理，就摆实实在在的“坑”：派出所超期关押、法院开庭没让看全证据、连裁定书编号都能搞错……这些看似“不起眼”的程序问题，差点把一个普通人的生活砸得稀碎。
-              </p>
+        </section>
 
-              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">来这儿，你能看到啥“关键细节”？</h3>
-              <div class="mb-4">
-              <p><strong>证据有多重要</strong>：当事人案发前两个月就买了同款手机，却硬被认定“抢劫”；派出所连夜审讯时留下的伤痕，全写在体检报告里，却在法庭上被“忽略”。</p>
-              <p><strong>　　程序漏洞长啥样</strong>：比如“24小时内必须送看守所”的规定被拖延5小时、家人始终没收到拘留通知书、庭审时关键监控视频“失踪”……这些你以为“电视剧里才有的情节”，真真实实在现实中发生了。</p>
-              </div>
-
-              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">　　对咱普通人有啥用？</h3>
-              <p class="mb-4">
-              就算一辈子不打官司，看懂这些也能少吃亏：<br>
-              ✅ 警察抓人后，家人收不到拘留通知？立刻问“按《刑事诉讼法》第85条，为啥不通知？”（记住：除了国家安全案件，24小时内必须通知家属）；<br>
-              ✅ 开庭时不让看证据、律师没帮你说话？这属于“剥夺质证权”，当场就能要求核对证据；<br>
-              ✅ 判决书下来觉得冤？别放弃！哪怕过了好几年，发现新证据或程序错误，一样能走法律程序启动维权，纠正错误。
-              </p>
-
-              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">为啥要讲这些“糟心事”？</h3>
-              <p class="mb-4">
-              因为这些“程序坑”离我们并不远：民事纠纷、邻里矛盾、甚至路上被误会……万一遇到，每个细节都可能影响结果。比如：<br>
-              👉 关键证据（聊天记录、监控、医院报告）一定要自己存好，别信“法院会查清楚”；<br>
-              👉 对方说“按规定办”时，多问一句“哪条规定？请给我看文件”（比如《法官行为规范》第53条要求“引用法律必须写清条款项”）；<br>
-              👉 觉得处理不公，别怕“麻烦”，国家给咱留了信访、申诉、抗诉等多条路，只要证据硬，总能讨说法。
-              </p>
-
-              <h3 class="text-sm sm:text-base font-bold mb-3 text-red-300">最后说句实在话：</h3>
-              <p class="mb-4">
-              咱老百姓不懂法律没关系，但得知道自己有啥权利。这里的每个故事、每条提醒，都是从“踩坑经历”里扒出来的干货。你花10分钟看看，或许能帮自己或亲友避个大雷；顺手转发出去，让更多人知道“遇到事别慌，法律程序里藏着公平的细节”。
-              </p>
-              <p class="mb-4">
-              感谢停留，愿每个普通人都能享受阳光，感受公平正义。
-              </p>
-            </a>
-          </li>
+        </p>
+            <section id="section-20241113 13:16">
+            <h2>2024年11月13日 13:16</h2>
+            <p>通过贵阳公安警务督察系统平台举报无回应</p>
+            <p>登记编码  zitsc06d64968c976 </p>
+            <p style="text-indent:2em;">2024年11月13日 13:16举报内容：本人2014年11月13日早上去毓秀路派出所。领 （2019） 黔0103刑初821号案件被告人扣押随身物品，案发时本人在河西路边公安岗亭内，被扣押的随身物品有：</p>
+            <p style="text-indent:2em;">1、钱包1个； 2、电信电话卡1张；3、工商银行卡一张；4、笔1支； 5、小本子1个； 6、黄果树牌香烟1包；7、 打火机1个。</p>
+            <p style="text-indent:2em;">但是到毓秀路派出所负责保管物品的民警（警号是X00028）拿出来一个登记簿,上面显示本人只有一张银行卡登记,而且现在银行卡也找不到了,其他物品没有登记，他也没有找到,之后我问他有没有扣押清单,他说要问具体办案的民警，我现在记不清是哪个民警办案，然后查看在一审法院的档案室的资料之后才发现，2019年1月21日晚，送押本人去看守所的民警庄**刚的联系方式是85281715,158*****444，联系到他之后，他说他只负责送押，其他的事情他不知道，这样我的随身物品一件没领到，而且扣押清单也没有，这可是程序性的文件，希望给一个合理的说法。</p>
+        </section>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
+            <p style="text-indent:2em;">
+                《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
+            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
         </ul>
         </ul>
-      </div>
-    </nav>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
 
-  <canvas id="sphereCanvas"></canvas>
-  <button class="sphere-toggle" id="sphereToggle" aria-pressed="false" title="切换动画复杂度">高性能模式</button>
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
+        
+        </section>
+        <section id="section-20241113 15时许">
+            <h2>2024年11月13日 15时许</h2>
+            <p style="text-indent:2em;">王贵平到贵阳市公安局云岩分局督察大队举报，毓秀路派送所。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题1：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题2：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题3：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
+            <p style="text-indent:2em;">
+                《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
+            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
+        </ul>
+        </ul>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
 
-  <footer class="w-full bg-secondary mt-auto footer">
-    <div class="max-w-[1440px] mx-auto px-6 py-4 text-center">
-      © 2025 天平啄木保留所有权利  
-      <span>啄一木而醒全林</span>
-    </div>
-  </footer>
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
+        
+        </section>
+        <section id="section-2024年11月13日 16:06:15">
+            <h2>2024年11月13日 下午</h2>
+            <p>时间：2024年11月13日 16:06:15</p>
+            <p>地点：贵阳市毓秀路派出所</p>
 
-  <script>
-    // 导航交互与无障碍
-    const hamburger = document.querySelector('.hamburger');
-    const mainmenu = document.getElementById('mainmenu');
-    const more = document.querySelector('.more');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
-      trigger.addEventListener('mouseenter', () => {
-        trigger.setAttribute('aria-expanded', 'true');
-      });
-      trigger.addEventListener('mouseleave', () => {
-        trigger.setAttribute('aria-expanded', 'false');
-      });
-      trigger.addEventListener('focus', () => {
-        trigger.setAttribute('aria-expanded', 'true');
-      });
-      trigger.addEventListener('blur', () => {
-        trigger.setAttribute('aria-expanded', 'false');
-      });
-      trigger.addEventListener('click', (e) => {
-        // 仅在移动端点击展开
-        if (window.innerWidth < 900) {
-          e.stopPropagation();
-          const expanded = trigger.getAttribute('aria-expanded') === 'true';
-          trigger.setAttribute('aria-expanded', !expanded);
-        }
-      });
-    });
+            <h3>地点一：服务大厅</h3>
+            <p>民警：你当时着（被抓）的时候你咋不讲呢？你现在那个。你好久出来的嘛？</p>
+            <p>王贵平：2013年1月20号（口误应该是2023年）。</p>
+            <p>民警：等于说当时你在打架，后面讲你抢手机？</p>
+            <p>王贵平：他后面给我做成抢手机，然后我去看守所才晓得呢，才反应过来。</p>
+            <p>民警：当时法院判的时候你咋（没讲）……</p>
+            <p>王贵平：我讲的，讲的，讲的没用。</p>
+            <p>民警：刚哥，王贵平的这个你有印象没有？说他打架被关。当时打架被关了呢嘛。</p>
+            <p>民警：你，王贵平本人是吗？</p>
+            <p>王贵平：是的。</p>
+            <p>民警：现在，刚才是个啥情况嘛？</p>
+            <p>王贵平：那天法院判的时候呢，上面写的这么多东西晓得吧，这么多证据，但是这些视频，呃就是那个……那天晚上的视频呢，就是我打人的那个视频都有，但是没有这个手机。（案发现场）那里有个公安岗亭，等于是在那个公安岗亭内出的案，但是公安岗亭内的那个视频没有。我就是着（被关）得莫名其妙的，就是！</p>
+            <p>民警：那打架的人呢，他说他抢手机的这个。</p>
+            <p>民警：带他去找钟所长呀。</p>
+            <p>民警：你这些东西在哪得的嘛？</p>
+            <p>王贵平：我自己打的。</p>
+            <p>民警：查阅档案你自己也查不到呀。</p>
+            <p>王贵平：我申请……</p>
+            <p>民警：申请对公嘛，还是对私呀，申请你肯定也查阅不到呀。你觉得这个案子有问题，你可以送（哪样）律师（呀），送哪……</p>
+            <p>王贵平：你看这个证据写是写这么多，但是我一样都没看着呀！</p>
+            <p>民警：这个（申请材料）东西。我暂时拿着一分钟，等一会儿我还你哈。</p>
+            <p>民警：先等一下哈，我和我们领导讲了。</p>
+            <p>王贵平：好的好的。</p>
 
-    if (hamburger) {
-      hamburger.addEventListener('click', () => {
-        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
-        hamburger.setAttribute('aria-expanded', !isExpanded);
-        mainmenu.classList.toggle('open');
-        if (more && dropdownMenu) {
-          more.setAttribute('aria-expanded', 'false');
-          dropdownMenu.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
+            <h3>地点二：服务大厅旁边的保管室</h3>
+            <p>民警：坐。（王贵平坐下）</p>
+            <p>A民警（有点像领导）：你来干啥？</p>
+            <p>王贵平：呃</p>
+            <p>A民警（有点像领导）：你来干啥？</p>
+            <p>王贵平：就是我那个（案子），他给我做成抢劫罪。我很莫名其妙的……</p>
+            <p>A民警：你坐了多少年嘛？</p>
+            <p>王贵平：四年。</p>
+            <p>A民警：你咋不上诉呢？</p>
+            <p>王贵平：上诉？上的呀。</p>
+            <p>A民警：然后呢？上诉，判了没有嘛？</p>
+            <p>王贵平：他搞一个，维持原判。</p>
+            <p>A民警：那么，你来找我们干啥呢？这个事！判都判了，你来找我们干啥呢？你，这个（查阅申请材料），这个东西是哪个拿给你的嘛？</p>
+            <p>王贵平：我自己做的。</p>
+            <p>A民警：个人哪会调得了东西！个人你调不到这些东西啊。你的律师，你有律师没有嘛？</p>
+            <p>王贵平：律师，没请。</p>
+            <p>A民警：你这个只有去申请，申请最高法复核。哪里会有你这种说法。</p>
+            <p>B民警：这个不该找侦查机关，应该找法院。</p>
+            <p>王贵平：法院我找过了的。</p>
+            <p>B民警：法院找了，你问一下律师哈。啊，第一……</p>
+            <p>A民警：（看完判决书）啊，你把人家手机拿了，把人家打了，就是抢劫啊。</p>
+            <p>王贵平：这是你们（派出所）写的，你们这里面写的……</p>
+            <p>A民警：你打人家没有嘛？</p>
+            <p>王贵平：打的呀。</p>
+            <p>A民警：你拿人家手机没有嘛？</p>
+            <p>王贵平：打和抢是两回事。</p>
+            <p>B民警：错！</p>
+            <p>A民警：你把人家手机拿了没有？</p>
+            <p>B民警：你说错了，兄弟。我给你讲，有个人……</p>
+            <p>A民警：我给你打个比方，你可能不懂。我想偷你的手机，结果被你发现了，在这个时候，手机虽然说拿在你手上，结果被人家……</p>
+            <p>王贵平：但是那个手机我看都没看到过哈。</p>
+            <p>A民警：结果，不管为啥，你为了拿这个东西打了我一拳，你就是抢劫，就这么简单。</p>
+            <p>B民警：盗窃转换为抢劫。</p>
+            <p>A民警：这个，哪有你这种说法，国家犯罪成本这么低，呃，大家都可以犯罪了，不行嘛！</p>
+            <p>王贵平：凡事，要讲个证据喽，这个！</p>
+            <p>A民警：你打人家没有嘛？</p>
+            <p>王贵平：打的，和（抢是两码事）……</p>
+            <p>A民警：拿到手机没嘛？</p>
+            <p>王贵平：不得（没有）！</p>
+            <p>A民警：你打人家干啥呢？</p>
+            <p>王贵平：那天出了点……</p>
+            <p>A民警：你打人家干啥嘛？你打人家又没*手机。</p>
+            <p>王贵平：那天情绪有点那个（失控）。</p>
+            <p>A民警：那，你打人家了呢嘛。</p>
+            <p>王贵平：打和抢不是一回事！</p>
+            <p>A民警：你拿人家手机呀。</p>
+            <p>王贵平：没拿。</p>
+            <p>A民警：没拿这个手机，你不会打人家啊？</p>
+            <p>王贵平：啊？</p>
+            <p>A民警：你不为这个手机，你不会打人家啊？</p>
+            <p>王贵平：那这个手机在哪里喽？监控在哪里喽，问题是？</p>
+            <p>A民警：我不想和你讲这些，在哪里。我只晓得判决书在这里。</p>
+            <p>B民警：这个，判都判了。你一审判的时候你咋不上诉啊？</p>
+            <p>某民警：～～（该部分语音辨识不清）所有的证据，所有啥东西我们都是移交法院了～（实在听不清楚他说啥，翻译不过来）。</p>
+            <p>B民警：你如果认为，你这个有问题，你直接去找判决法院。我们只能以我们收，我们收集的证据，提交检察院，检察院提交法院。</p>
+            <p>A民警：你这个只有申请最高法复核。你认为你这个是啥子嘛，你认为就是个打架？</p>
+            <p>王贵平：就是个打，打人。</p>
+            <p>B民警：这个东西……</p>
+            <p>A民警：我直接给你讲。啊，判都判了，上诉也维持原判，那么就说明，我个人，虽然不是我办的，但是我个人认为，如果维持原判的话，证据链是完整的，并且是合法有效的。</p>
+            <p>C民警：你如果认为，证据有问题，在过程中对你的认定还是有问题，你依然可以找法院哈，这个早就移送到～（方言不好翻译，省略了）</p>
+            <p>A民警：你在哪里坐的嘛？</p>
+            <p>王贵平：嗯？</p>
+            <p>A民警：你在哪里坐的呢？</p>
+            <p>王贵平：北斗山。</p>
+            <p>A民警：那么，那期间你没有申请啊？</p>
+            <p>C民警：检察院也会起诉的啊。</p>
+            <p>（A、B）警：他上诉了的，上诉维持原判。嗯，（对王贵平说）是不是啊？啊，你上诉……</p>
+            <p>王贵平：维持原判。</p>
+            <p>A，B，C警：对了，是终审啊，那就再上啊。</p>
+            <p>王贵平：你看，这些都是法院的，那个证据。这个证据哪有（抢手机）</p>
+            <p>A民警：啊。</p>
+            <p>王贵平：这是从法院调的证据，你看哪里有我抢的手机嘛，图片也没有一张！</p>
+            <p>A民警：这个你在哪里得的嘛？</p>
+            <p>王贵平：法院调的啊。</p>
+            <p>B民警：你如果认为，这个东西……你可以去法院……</p>
+            <p>A民警：这上面，你的便捷有的呀。“有异议，我是治安案件，没有抢劫”，人家给你记了的呀。人家这个不是，凭你认为是啥就是啥。法院审理综合多种证据认定下来，才认定你是抢劫啊。</p>
+            <p>王贵平：这个就是那个法院掌握的所有的东西。</p>
+            <p>A民警：不可能，这个是法院的判决卷，不是公安的侦查卷，啊。这个是法院的卷，不是公安的卷。</p>
+            <p>王贵平：你看这上面它（王贵平在云岩区法院拷贝的正卷存在手机里）写的是证据材料是吧？相关证据材料，你好好看一下，有哪一个证据是有手机的？</p>
+            <p>A民警：那么我就这样跟你讲，判了，法院判了，啊！请你去申请最高法院复核，完了。你个人来调东西，首先我们这里调不到，另外一个，我们也不会提供给个人。</p>
+            <p>C民警：卷也不在我们手上。</p>
+            <p>A民警：也不在我们手上，你坐着。</p>
+            <p>C民警：那么，直接去最高法院……</p>
+            <p>（王贵平最后无功而返）</p>
+        </section>
+        <section id="section-20241216">
+            <p>时间：2024年12月16日 11:37:34（左右）</p>
+            <p>地点：贵阳市毓秀路派出所</p>
 
-    document.querySelectorAll('.nav-link:not(.more)').forEach(item => {
-      item.addEventListener('click', () => {
-        if (more && dropdownMenu) {
-          more.setAttribute('aria-expanded', 'false');
-          dropdownMenu.setAttribute('aria-expanded', 'false');
-        }
-        if (window.innerWidth < 900 && hamburger && mainmenu) {
-          hamburger.setAttribute('aria-expanded', 'false');
-          mainmenu.classList.remove('open');
-        }
-      });
-    });
+            <h3>对话内容</h3>
+            <p>A民警：现在住哪里？</p>
+            <p>王贵平：现在住龙里。</p>
+            <p>A民警：贵阳没住住呢嘛。</p>
+            <p>王贵平：嗯，没有。</p>
+            <p>A民警：电话号码是好多？</p>
+            <p>王贵平：13885444983。</p>
+            <p>A民警：有职业没有？</p>
+            <p>王贵平：现在生病，暂时还没有。</p>
+            <p>A民警：文化程度？</p>
+            <p>王贵平：高中。</p>
+            <p>A民警：今日来派出所是因为什么事？</p>
+            <p>王贵平：因为……这些事情，我都写在上面（提前准备的资料）的，麻烦你看，哈。在那个110（报警系统）上面也有。</p>
+            <p>A民警：这个我倒是看了，那么你今天来是因为啥你要给我讲啊。</p>
+            <p>王贵平：呃。</p>
+            <p>A民警：今天你来我们派出所是因为啥？</p>
+            <p>王贵平：嗯，我那天通过110呢，本来是向贵阳市公安局报的警，然后我不知道它为啥，为啥会接到你们派出所。然后呢，当天了，你们派出所又打电话喊我来核实情况，所以呢，我今天就来了。就是这么个情况。</p>
+            <p>A民警：核实啥嘛？</p>
+            <p>王贵平：这个是你们派出所的人打电话叫我过来的，我也不晓得核实啥。</p>
+            <p>A民警：派出所的人打的嘛。</p>
+            <p>王贵平：唉。顺便这个手机的，叫啥，指控的证物也有问题。</p>
+            <p>A民警：啥指控的证物有问题嘛？</p>
+            <p>王贵平：这个手机的真实性有点问题啊！我觉得。</p>
+            <p>A民警：手机，啥手机真实性有问题吗？</p>
+            <p>王贵平：就是这个案件的手机的那个，本来我（案发）之前用的手机就是oppo手机呢。</p>
+            <p>A民警：嗯，然后呢？</p>
+            <p>王贵平：然后他指控我的手机，我也没见过，照片我也没看到。</p>
+            <p>………</p>
+            <p>王贵平：麻烦你把它拷一份，或者复印一份。</p>
+            <p>A民警：啊？</p>
+            <p>王贵平：免得……我说麻烦你照个片或者是那个，到时候大家都好那个。到时候我来了，你，你，问你你不要说没这回事的话，那个就……</p>
+            <p>A民警：看不懂。</p>
+            <p>王贵平：咋会看不懂呢，这么简单。</p>
+            <p>A民警：确实看不懂。在哪里（2019年1月20日晚在派出所）被打了？</p>
+            <p>王贵平：就在值班室外面，我不晓得在哪里，有点像个房间里面，又像房间，又不晓得是不是房间，可能是更衣室我估计。</p>
+            <p>A民警：派出所吗，还是哪里嘛？</p>
+            <p>王贵平：就在派出所。</p>
+            <p>A民警：哪里的派出所？</p>
+            <p>王贵平：就在你们毓秀路派出所。</p>
+            <p>A民警：好久的事情？</p>
+            <p>王贵平：2019年1月20号晚上。</p>
+            <p>A民警：你说你晕倒，你咋会晓得你被别人扶到树下呢？</p>
+            <p>王贵平：我醒来就在那里的噻，没人扶我，我咋会被移到那个树下面呢。</p>
+            <p>A民警：路边么，还是哪里吗？</p>
+            <p>王贵平：啊？</p>
+            <p>A民警：是路边么，还是哪里嘛？</p>
+            <p>王贵平：你讲的是？</p>
+            <p>A民警：晕倒。</p>
+            <p>王贵平：晕倒就在（大十字）广场中心那里。</p>
+            <p>A民警：你说你下午苏醒后，因路人言语难听，咋个难听嘛？</p>
+            <p>王贵平：可能就是因为早上遭骂后，可能就是听人说话（情绪）不那个。</p>
+            <p>A民警：人家说啥嘛？</p>
+            <p>王贵平：那个时候，晕倒刚醒来，可能也没想到这么多，还可能就是。</p>
+            <p>A民警：等于你不知道人家说啥呢嘛。</p>
+            <p>王贵平：啊！</p>
+            <p>A民警：你不晓得对方讲啥呢嘛。</p>
+            <p>王贵平： 哎。</p>
+            <p>A民警：那么不知道对方说了什么，咋会有言语难听一说呢？</p>
+            <p>王贵平：可能他就是说话有点，咋讲呢哈，反正就是带黄腔的那种嘛，可能就是。</p>
+            <p>A民警：你都不晓得他讲的是啥东西，现在。呃带黄腔，我也搞不清楚。</p>
+            <p>王贵平：总的反正就是一个情绪的问题，没控制好。</p>
+            <p>A民警：你这个，你说的是语言与难听，你又不晓得对方讲的是啥东西。那你又是和哪个发生肢体冲突嘛？</p>
+            <p>王贵平：这些和这个案件没关系呀？</p>
+            <p>A民警：那么，你给我讲嘛，啥和这个案件有关系喽。</p>
+            <p>王贵平：就是那个手机的问题啊。</p>
+            <p>A民警：啥手机？</p>
+            <p>王贵平：就是只跟我抢的那个手机啊。</p>
+            <p>A民警：指控你抢的手机。等于你今天来，是说是派出所的民警人打的呢嘛，是这个意思吗？</p>
+            <p>王贵平：在派出所，除了民警还有谁敢打人？</p>
+            <p>A民警：我在问你，你不要反问我，我咋晓得！我是在问你，啊你是在向我反映，被警察殴打是吗？时间是1月20日晚上23点左右是吗？</p>
+            <p>王贵平：时间是在晚上21:00~23:00左右，反正就是在这段时间。</p>
+            <p>A民警：21:00~23年左右，是不是这个意思？</p>
+            <p>王贵平：那（材料）上面都写的很清楚的嘛？</p>
+            <p>A民警：我问你，不是说那上面清楚嘞！我看不懂，我就跟你讲，你要（我）咋讲。</p>
+            <p>王贵平：反正就是大概（晚上）9:00~12:00那段时间。</p>
+            <p>A民警：接近（晚上）12点是不是嘛？</p>
+            <p>王贵平：诶，接近晚上12点。</p>
+            <p>A民警：你说一下事情的经过。</p>
+            <p>王贵平：经过那（材料）上面都写的有啊。</p>
+            <p>A民警：刚刚我在讲因为啥被打这些，你说那不是重点，那么我就问你重点你讲给我听啊， 经过，是因为啥嘛！你讲给我听啊，是因为啥嘛？</p>
+            <p>王贵平：重点就是因为那天我打那个人，然后后面把我指控成抢劫。那这个证物手机的真实性，我不晓得是咋个证明这个，我没看到过手机。</p>
+            <p>A民警：几点钟打的人嘛？</p>
+            <p>王贵平：你讲的是我在那边（大十字广场）几点钟打的人是吧？</p>
+            <p>A民警： 诶，你不是说你打人呀，几点钟打的人嘛？</p>
+            <p>王贵平：我没带时间，上面写的是大概是晚上，下午18点左右吧，18点30分左右好像。</p>
+            <p>A民警：18时左右是不是嘛？</p>
+            <p>王贵平：判决书上是这么写的。</p>
+            <p>A民警：你在广场中心把人打了是吗？</p>
+            <p>王贵平：不是广场中心，是广场的边上挨着河西路的那点，那点还有个公安岗亭。</p>
+            <p>A民警：是你把人家打了，在河西路口那里呢嘛？</p>
+            <p>王贵平：就是在广场上挨着河西路边。</p>
+            <p>A民警：你把人打了是吗？</p>
+            <p>王贵平：诶。</p>
+            <p>A民警：对方是男的还是女的嘛？</p>
+            <p>王贵平：男的。</p>
+            <p>A民警：打了，然后呢？打了人然后呢？</p>
+            <p>王贵平：打了人，然后被他们（被害人，还有其他人）反应过来，就把我送到那个公安岗亭里面去。</p>
+            <p>A民警：是送到公安岗亭，还是哪样？</p>
+            <p>王贵平：公安岗亭里面。</p>
+            <p>A民警：然后呢？</p>
+            <p>王贵平：然后我等了大概半个小时以后……</p>
+            <p>A民警：里面有人没有嘛？</p>
+            <p>王贵平：我在里面的时候没有人，就是我一个。</p>
+            <p>A民警：等于对方把你送到里面，你就一个人在里面摆起呀？</p>
+            <p>王贵平： 唉。</p>
+            <p>A民警：那两个没和你在一起呀？</p>
+            <p>王贵平：那两个我不晓得，应该是在外面嘛。具体情况反正我也不清楚，反正我在里面。</p>
+            <p>A民警：等于岗亭里面没人？</p>
+            <p>王贵平：没有。里面有监控的。</p>
+            <p>A民警：有啥控都没用，5年了。</p>
+            <p>王贵平：这个时间不存在问题嘛。</p>
+            <p>A民警：那么，证明你不懂呢嘛。</p>
+            <p>A民警：大概等了半个小时的样子就有民警，是不是嘛？</p>
+            <p>王贵平：唉。</p>
+            <p>A民警：着装没有？</p>
+            <p>王贵平：现在我记不清楚了。</p>
+            <p>A民警：最后警察来干了啥呢？</p>
+            <p>王贵平：最后警察来就是，他喊我把身上的东西掏出来，放在那个凳子上。</p>
+            <p>A民警：警察来岗亭里，喊你把身上的东西掏出来是不是嘛？</p>
+            <p>王贵平：诶，就是随身物品。</p>
+            <p>A民警：放在岗亭里的凳子上是不是嘛？</p>
+            <p>王贵平：唉，里面有一个长凳子。</p>
+            <p>A民警：之后呢？</p>
+            <p>王贵平：掏出来以后，然后过一段时间好像，他做了登记以后，然后就，然后之后就给我上手铐嘛，就把我送到派出所来了，好像是打开执法记录仪的那天。</p>
+            <p>A民警：就是给你登记呢嘛？</p>
+            <p>王贵平： 唉，给我登记，但是没有手机哦。这个（纸质材料上写的）是我那天放在（岗亭里面的凳子）上面的东西。</p>
+            <p>A民警：给你登记完后，就有人给你上手铐是不是嘛？然后呢？</p>
+            <p>王贵平：然后就把我送到派出所来。然后送到派出所呆了差不多个把小时的时候，就在这个，这里应该是值班室嘛？</p>
+            <p>A民警：这里是值班室呀。</p>
+            <p>王贵平：就在值班室这里待了一个小时左右。然后就（被）带进调解室，那你是不是条件是嘛？</p>
+            <p>A民警：嗯。</p>
+            <p>王贵平：唉，先是（被）带进去那个调解室里面。然后又被带出去了，我不晓得是被带到哪个地方，不晓得是不是更衣室或者是，反正就是在一个房间里面。可能没监控里面。</p>
+            <p>A民警：被带到调解室，又被带到房间里，哪里的房间嘛？</p>
+            <p>王贵平：我不晓得，反正就是，这里（指责值班室门外左侧的屋子）。</p>
+            <p>A民警：然后呢？</p>
+            <p>王贵平：然后就招电棍，甩棍那些（违法使用警械）招呼了噻。</p>
+            <p>A民警：没其它呢嘛？</p>
+            <p>王贵平：反正到晚上12点左右的时候，再被带到那个，应该是讯问室嘛里面，就是那个，就是，开始做笔录的那里面是不是讯问室嘛？</p>
+            <p>A民警：你讲哪里？哪里做笔录？是在派出所里面，还是在哪？</p>
+            <p>王贵平：就在派出所（里），这里嘛。</p>
 
-    document.addEventListener('click', (e) => {
-      if (more && dropdownMenu && !more.contains(e.target)) {
-        more.setAttribute('aria-expanded', 'false');
-        dropdownMenu.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    if (dropdownMenu) {
-      dropdownMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-    }
-
-    // 动画核心逻辑
-    const canvas = document.getElementById('sphereCanvas');
-    const ctx = canvas.getContext('2d');
-    const navbar = document.querySelector('.navbar');
-    const footer = document.querySelector('.footer');
-    const sphereToggle = document.getElementById('sphereToggle');
-
-    // 动画点数自适应
-    let highPerformance = false;
-    let numPoints = 200;
-    function getAdaptiveNumPoints() {
-      if (highPerformance) return 80;
-      if (window.innerWidth < 600) return 80;
-      if (window.devicePixelRatio > 1.5) return 120;
-      return 200;
-    }
-
-    function resizeCanvas() {
-      const dpr = window.devicePixelRatio || 1;
-      const navbarHeight = navbar.offsetHeight;
-      const footerHeight = footer.offsetHeight;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = (window.innerHeight - navbarHeight - footerHeight) * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = (window.innerHeight - navbarHeight - footerHeight) + 'px';
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
-      centerX = window.innerWidth / 2;
-      centerY = (window.innerHeight - navbarHeight - footerHeight) / 2;
-    }
-
-    const numbers = ['天', '平', '啄', '木', '鸟'];
-    const points = [];
-    let centerX, centerY;
-    let radius, rotationSpeed = 0.01;
-
-    function generatePoints() {
-      points.length = 0;
-      numPoints = getAdaptiveNumPoints();
-      radius = Math.min(window.innerWidth, window.innerHeight - navbar.offsetHeight - footer.offsetHeight) * 0.3;
-      for (let i = 0; i < numPoints; i++) {
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
-        points.push({
-          x, y, z,
-          number: numbers[i % numbers.length],
-        });
-      }
-    }
-
-    // 定义每个字的颜色
-    function getColorForChar(char, alpha) {
-      switch (char) {
-        case '天': return `rgba(255,0,0,${alpha})`;      // 红色
-        case '啄': return `rgba(255,255,0,${alpha})`;    // 黄色
-        case '木': return `rgba(255,255,255,${alpha})`;  // 白色
-        case '鸟': return `rgba(255,215,0,${alpha})`;    // 金色
-        default:   return `rgba(0,255,0,${alpha})`;      // 绿色（平字）
-      }
-    }
-
-    let angleX = 0, angleY = 0;
-    let animationId = null;
-
-    function render() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const rotatedPoints = points.map(point => {
-        const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-        const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-        const rotatedY = point.y * cosX - point.z * sinX;
-        const rotatedZ = point.y * sinX + point.z * cosX;
-        const finalX = point.x * cosY - rotatedZ * sinY;
-        const finalZ = point.x * sinY + rotatedZ * cosY;
-        return { x: finalX, y: rotatedY, z: finalZ, number: point.number };
-      });
-      rotatedPoints.sort((a, b) => b.z - a.z);
-      rotatedPoints.forEach(point => {
-        const scale = 500 / (500 + point.z);
-        const screenX = centerX + point.x * scale;
-        const screenY = centerY + point.y * scale;
-        ctx.font = `${16 * scale}px monospace`;
-        let alpha = Math.max(0.2, scale);
-        ctx.fillStyle = getColorForChar(point.number, alpha);
-        ctx.textAlign = 'center';
-        ctx.fillText(point.number, screenX, screenY);
-      });
-      angleX += rotationSpeed;
-      angleY += rotationSpeed;
-      animationId = requestAnimationFrame(render);
-    }
-
-    function restartSphere() {
-      if (animationId) cancelAnimationFrame(animationId);
-      resizeCanvas();
-      generatePoints();
-      render();
-    }
-
-    window.addEventListener('resize', restartSphere);
-
-    // 动画复杂度切换
-    sphereToggle.addEventListener('click', () => {
-      highPerformance = !highPerformance;
-      sphereToggle.setAttribute('aria-pressed', highPerformance ? 'true' : 'false');
-      sphereToggle.textContent = highPerformance ? '低复杂度模式' : '高性能模式';
-      restartSphere();
-    });
-
-    // 初始化
-    restartSphere();
-  </script>
+            <p>时间：2024年12月16日 13:24:53（左右）</p>
+            <p>地点：贵阳市毓秀路派出所</p>
+            <p>实际做笔录A警：录笔录中，王贵平确认，已经改了两次，此次是第3次核对笔录内容</p>
+            <p>王贵平：这一张，这个字有点问题，应该是带言字旁那个讯，是讯问，不是询问，其他的都没啥问题。</p>
+            <p>A民警：签字。</p>
+            <p>王贵平：等于……你们先签嘛。</p>
+            <p>A民警：啊，我说是你看过了签字，后面他们会过来签字的。</p>
+            <p>王贵平：你们先签，我先去吃饭，吃饭完了，是哪个询问的，哪个签哈。</p>
+            <p>A民警：去（吃饭）呀。</p>
+        </section>
+        <!-- 其他正文内容 -->
+    </main>
 </body>
 </html>
