@@ -2,233 +2,141 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>天平啄木鸟走访时间线</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一位不服者的释后之访</title>
     <style>
-        :root {
-            --primary-bg: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            --nav-bg: rgba(30, 22, 54, 0.7);
-            --main-bg: rgba(25, 30, 60, 0.7);
-            --border-color: rgba(68,68,68,0.25);
-            --shadow: 0 4px 32px 0 rgba(40,40,80,0.12);
-            --radius: 12px;
-            --blur: blur(4px);
-            --text-main: #fff;
-            --text-sub: #e0e7ff;
-            --text-highlight: #ffb6ff;
-            --text-title: #b388ff;
-            --text-section: #80d0ff;
-            --text-legal: #4caf50;
-            --danger: #ff1744;
-            --warning: hsl(49, 100%, 44%);
-        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            font-family: "Segoe UI", sans-serif;
         }
-        html, body {
-            height: 100%;
-        }
-        body {
-            background: var(--primary-bg);
-            color: var(--text-main);
-            display: flex;
-            min-height: 100vh;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .nav-directory {
-            width: 300px;
-            flex-shrink: 0;
-            padding: 32px 20px 24px 20px;
-            border-right: 1px solid var(--border-color);
-            background: var(--nav-bg);
-            backdrop-filter: var(--blur);
-            height: 100vh;
-            overflow-y: auto;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            transition: width 0.2s;
-        }
-        .nav-directory h1 {
-            font-size: 1.35em;
-            color: var(--text-title);
-            margin-bottom: 18px;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
+
+body {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    display: flex;
+    min-height: 100vh;
+    height: 100vh;           /* 新增 */
+    overflow: hidden;        /* 新增，防止body整体滚动 */
+}
+
+/* 左侧导航目录 */
+.nav-directory {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 30px 20px;
+    border-right: 1px solid rgba(68,68,68,0.3);
+    background: rgba(30, 22, 54, 0.6);
+    backdrop-filter: blur(2px);
+    height: 100vh;           /* 新增，高度占满视口 */
+    overflow-y: auto;        /* 新增，独立滚动条 */
+    position: sticky;        /* 新增，固定在左侧 */
+    top: 0;                  /* 新增 */
+}
+
+/* 中间正文区域 */
+.main-content {
+    flex-grow: 1;
+    padding: 30px 40px;
+    overflow-y: auto;
+    min-width: 400px;
+    background: rgba(25, 30, 60, 0.5);
+    backdrop-filter: blur(2px);
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 4px 32px 0 rgba(40,40,80,0.12);
+    height: 100vh;           /* 新增，高度占满视口 */
+}
+        /* 目录样式 */
         .date-item {
-            margin: 14px 0;
-            border-bottom: 1px solid var(--border-color);
+            margin: 15px 0;
+            border-bottom: 1px solid rgba(68,68,68,0.3);
         }
+
         .summary-title {
-            font-size: 1.08em;
-            color: var(--text-highlight);
+            font-size: 1.1em;
+            color: #ffb6ff;
             cursor: pointer;
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: color 0.2s;
-            user-select: none;
         }
+
         .summary-title:hover {
             color: #fff;
         }
+
         .summary-title .arrow {
             display: inline-block;
             transition: transform 0.2s;
             font-size: 1.2em;
             margin-left: 8px;
         }
+
         details[open] .summary-title .arrow {
             transform: rotate(90deg);
         }
+
         .details-content {
-            padding: 8px 0 10px 0;
-            font-size: 0.97em;
+            padding: 10px 0;
+            font-size: 0.95em;
             color: #c3cfff;
         }
+
         .event-item {
-            margin: 7px 0;
+            margin: 8px 0;
             line-height: 1.6;
         }
+
         .highlight {
-            color: var(--text-highlight);
+            color: #ffb6ff;
             font-weight: 500;
         }
-        .main-content {
-            flex-grow: 1;
-            padding: 36px 48px 32px 48px;
-            overflow-y: auto;
-            min-width: 0;
-            background: var(--main-bg);
-            backdrop-filter: var(--blur);
-            border-radius: 0 var(--radius) var(--radius) 0;
-            box-shadow: var(--shadow);
-            height: 100vh;
-            transition: padding 0.2s;
-        }
+
+        /* 正文标题样式 */
         .main-content h1 {
-            font-size: 2.1em;
-            color: var(--text-title);
-            margin-bottom: 22px;
+            font-size: 2em;
+            color: #b388ff;
+            margin-bottom: 20px;
             letter-spacing: 2px;
-            font-weight: 700;
         }
+
         .main-content h2 {
-            color: var(--text-section);
-            margin-bottom: 14px;
-            font-size: 1.3em;
-            font-weight: 600;
+            color: #80d0ff;
+            margin-bottom: 12px;
         }
-        .main-content h3 {
-            color: var(--text-highlight);
-            margin: 18px 0 8px 0;
-            font-size: 1.08em;
-            font-weight: 600;
-        }
+
         .main-content p {
             line-height: 1.8;
-            color: var(--text-sub);
-            margin-bottom: 13px;
-            font-size: 1em;
-            word-break: break-word;
+            color: #e0e7ff;
+            margin-bottom: 15px;
         }
-        .main-content ul {
-            font-size: 0.97em;
-            color: var(--text-legal);
-            text-indent: 2em;
-            margin-bottom: 10px;
-        }
-        .main-content li {
-            list-style-type: none;
-            text-indent: 2em;
-        }
+
+        /* 锚点跳转样式 */
         [id^="section-"]:before {
             content: "";
             display: block;
             height: 60px;
             margin: -60px 0 0;
         }
-        a {
-            color: var(--text-section);
-            text-decoration: underline;
-            word-break: break-all;
-        }
-        a:visited {
-            color: #b2aaff;
-        }
-        img {
-            max-width: 100%;
-            margin: 16px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-            display: block;
-        }
-        b, strong {
-            font-weight: 600;
-        }
-        /* Scrollbar for better UX */
-        ::-webkit-scrollbar {
-            width: 8px;
-            background: rgba(0,0,0,0.08);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(120,120,180,0.18);
-            border-radius: 4px;
-        }
-        /* Responsive Design */
-        @media (max-width: 1100px) {
-            .main-content {
-                padding: 24px 12px 20px 12px;
-            }
-            .nav-directory {
-                width: 220px;
-                padding: 24px 10px 16px 10px;
-            }
-        }
+
+        /* 响应式设计 */
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
-                height: auto;
-                min-height: 100vh;
             }
+
             .nav-directory {
                 width: 100%;
                 border-right: none;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid rgba(68,68,68,0.3);
                 border-radius: 0;
-                height: auto;
-                max-height: 240px;
-                position: static;
-                z-index: 1;
-                padding: 18px 8px 10px 8px;
             }
+
             .main-content {
-                border-radius: 0 0 var(--radius) var(--radius);
-                min-width: 0;
-                height: auto;
-                padding: 18px 6vw 18px 6vw;
-            }
-        }
-        @media (max-width: 600px) {
-            .main-content {
-                padding: 12px 2vw 12px 2vw;
-                font-size: 0.98em;
-            }
-            .nav-directory {
-                font-size: 0.98em;
-                max-height: 180px;
-            }
-            .main-content h1 {
-                font-size: 1.3em;
-            }
-            .main-content h2 {
-                font-size: 1.08em;
+                padding: 20px;
+                border-radius: 0 0 12px 12px;
             }
         }
     </style>
@@ -236,9 +144,9 @@
 <body>
     <!-- 左侧导航目录 -->
     <aside class="nav-directory">
-        <h1>浏览导航栏</h1>
+             <h1>浏览导航栏</h1>
         <details class="date-item" id="20241113 9时左右">
-            <summary class="summary-title"></summary>
+            <summary class="summary-title">
                 <a href="#section-20241113 9时左右" style="color:inherit;text-decoration:none;">2024年11月13日 9时许</a>
                 <span class="arrow">▶</span>
             </summary>
@@ -246,146 +154,654 @@
                 <div class="event-item">王贵平的随身物品没有一件成功领取</div>
             </div>
         </details>
+
         <details class="date-item" id="20241113 13:16">
             <summary class="summary-title">
                 <a href="#section-20241113 13:16" style="color:inherit;text-decoration:none;">2024年11月13日13:16</a>
                 <span class="arrow">▶</span>
             </summary>
-            <div class="details-content"></div>
+            <div class="details-content">
                 <div class="event-item">通过贵阳公安警务督察系统平台举报</div>
                 <div class="event-item">无回应</div>
+
             </div>
         </details>
         <details class="date-item" id="20241113 15时许">
-            <summary class="summary-title"></summary>
+            <summary class="summary-title">
                 <a href="#section-20241113 15时许" style="color:inherit;text-decoration:none;">2024年11月13日15时许</a>
                 <span class="arrow">▶</span>
             </summary>
             <div class="details-content">
                 <div class="event-item">到贵阳市公安局云岩分局举报毓秀路派出所</div>
+
             </div>
         </details>
         <details class="date-item" id="2024年11月13日 16:06:15">
-            <summary class="summary-title"></summary>
+            <summary class="summary-title">
                 <a href="#section-2024年11月13日 16:06:15" style="color:inherit;text-decoration:none;">2024年11月13日 16:06:15</a>
                 <span class="arrow">▶</span>
             </summary>
             <div class="details-content">
                 <div class="event-item">返回毓秀路派出所申请查阅缺失的卷宗资料</div>
-            </div>
-        </details>
-        <details class="date-item" id="20241216">
-            <summary class="summary-title"></summary>
-                <a href="#section-2024年12月16日" style="color:inherit;text-decoration:none;">2024年12月16日11:37:34</a>
-                <span class="arrow">▶</span>
-            </summary>
-            <div class="details-content"></div>
-                <div class="event-item">到贵阳市公安局云岩分局举报毓秀路派出所</div>
-            </div>
-        </details>
+                </details>
+                <details class="date-item" id="20241216">
+                    <summary class="summary-title">
+                        <a href="#section-20241216" style="color:inherit;text-decoration:none;" onclick="event.preventDefault();document.getElementById('section-20241216').scrollIntoView({behavior:'smooth'});">2024年12月16日11:37:34</a>
+                        <span class="arrow">▶</span>
+                    </summary>
+                    <div class="details-content">
+                        <div class="event-item">到贵阳市公安局云岩分局举报毓秀路派出所</div>
+                    </div>
+                </details>
+                <details class="date-item" id="20241218-112741">
+                    <summary class="summary-title">
+                    <a href="#section-20241218-112741" style="color:inherit;text-decoration:none;" onclick="event.preventDefault();document.getElementById('section-20241218-112741').scrollIntoView({behavior:'smooth'});">2024年12月18日王贵平被忽悠白跑路</a>
+                    <span class="arrow">▶</span>
+                    </summary>
+                    <div class="details-content">
+                    <div class="event-item">白费路费</div>
+                    </div>
+                </details>
+                <details class="date-item" id="20241218-164339">
+                    <summary class="summary-title">
+                    <a href="#section-20241218-164339"  style="color:inherit;text-decoration:none;" onclick="event.preventDefault();document.getElementById('section-20241218-164339').scrollIntoView({behavior:'smooth'});">2024年12月18日王贵平再次到贵阳市公安局云岩分局督察大队</a>
+                    <span class="arrow">▶</span>
+                    </summary>
+                    <div class="details-content">
+                    <div class="event-item">再次到贵阳市公安局云岩分局督察大队</div>
+                    </div>
+                </details>
+                <details class="date-item" id="20241231-212357">
+                    <summary class="summary-title">
+                    <a href="#section-20241231-212357"  style="color:inherit;text-decoration:none;" onclick="event.preventDefault();document.getElementById('section-20241231-212357').scrollIntoView({behavior:'smooth'});">2024年12月31贵阳市公安局云岩分局胡督察电话回访</a>
+                    <span class="arrow">▶</span>
+                    </summary>
+                    <div class="details-content">
+                    <div class="event-item">2024年12月31贵阳市公安局云岩分局胡督察电话回访，无实质性解决问题</div>
+                    </div>
+                </details>
+
+
+
         <!-- 其他日期节点 -->
     </aside>
+
     <!-- 中间正文区域 -->
     <main class="main-content">
         <h1>释后之访</h1>
+
         <section id="section-20241113 9时左右">
             <h2>2024年11月13日 9时左右</h2>
-            <img src="images/IMG_20241213_105207.jpg" alt="案发地点图片">
             <p style="text-indent:2em;">王贵平达到贵阳毓秀路派出所，准备领取2019年1月20日18时50分许，被捕警在大十字广场河西路边的公安岗亭扣留的个人随身物品，接待民警编号为X00028。结果该民警拿出登记簿，上面只显示一张王贵平的工商银行卡被登记，显示有王贵平的署名捺印。王贵平称还有其它物品，该民警回应只有找实际办案民警，至于银行卡的问题，该民警的回答是不知道放哪里了，找不到了。最后王贵平什么都没领到。</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题1：</b>银行卡是怎么来的，检查、扣押等相关视频在哪里？问题指向当日2位捕警以及其执法记录仪视频。</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题2：</b>能证明指控证物OPPO A5手机来源的视频就是公安岗亭内的监控和当日抓捕民警的执法记录仪视频在庭审以及2024年11月5日王贵平拷贝的“正卷1”中缺失，指控证物OPPO A5手机是虚构事实或凭空捏造让人生疑。</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题3：</b>抓捕过程的公安岗亭监控视频和抓捕民警的执法记录仪视频可直接证明王贵平送达看守所时右眼部、左背部、双手背的伤情是派出所工作人员所为还是案发时打斗受伤，但是这些关键证据缺失，系故意隐匿或其它原因没有出示或没有移送，让人难以信访。</p>
-            <p style="text-indent:2em;"><b style="color:var(--warning);">法律依据：</b></p>
-            <p style="text-indent:2em;"></p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题1：</b>银行卡是怎么来的，检查、扣押等相关视频在哪里？问题指向当日2位捕警以及其执法记录仪视频。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题2：</b>能证明指控证物OPPO A5手机来源的视频就是公安岗亭内的监控和当日抓捕民警的执法记录仪视频在庭审以及2024年11月5日王贵平拷贝的“正卷1”中缺失，指控证物OPPO A5手机是虚构事实或凭空捏造让人生疑。</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题3：</b>抓捕过程的公安岗亭监控视频和抓捕民警的执法记录仪视频可直接证明王贵平送达看守所时右眼部、左背部、双手背的伤情是派出所工作人员所为还是案发时打斗受伤，但是这些关键证据缺失，系故意隐匿或其它原因没有出示或没有移送，让人难以信访。</p>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
+            <p style="text-indent:2em;">
                 《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
-                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank">查看原文</a>
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
             </p>
-            <ul>
-                第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
-            </ul>
-            <ul>第七条  现场执法视音频记录应当重点摄录以下内容：
-                <li>（一）执法现场环境；</li>
-                <li>（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
-                <li>（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
-                <li>（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
-                <li>（五）其他应当记录的重要内容。</li>
-            </ul>
-            <p style="text-indent:2em;"></p>
-                <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank">点击查看案发地点图片（访问码：7yfj）</a>
-            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
+        </ul>
+        </ul>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
+
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
+        
         </section>
-        <section id="section-20241113 13:16"></section>
+
+        </p>
+            <section id="section-20241113 13:16">
             <h2>2024年11月13日 13:16</h2>
             <p>通过贵阳公安警务督察系统平台举报无回应</p>
             <p>登记编码  zitsc06d64968c976 </p>
             <p style="text-indent:2em;">2024年11月13日 13:16举报内容：本人2014年11月13日早上去毓秀路派出所。领 （2019） 黔0103刑初821号案件被告人扣押随身物品，案发时本人在河西路边公安岗亭内，被扣押的随身物品有：</p>
             <p style="text-indent:2em;">1、钱包1个； 2、电信电话卡1张；3、工商银行卡一张；4、笔1支； 5、小本子1个； 6、黄果树牌香烟1包；7、 打火机1个。</p>
             <p style="text-indent:2em;">但是到毓秀路派出所负责保管物品的民警（警号是X00028）拿出来一个登记簿,上面显示本人只有一张银行卡登记,而且现在银行卡也找不到了,其他物品没有登记，他也没有找到,之后我问他有没有扣押清单,他说要问具体办案的民警，我现在记不清是哪个民警办案，然后查看在一审法院的档案室的资料之后才发现，2019年1月21日晚，送押本人去看守所的民警庄**刚的联系方式是85281715,158*****444，联系到他之后，他说他只负责送押，其他的事情他不知道，这样我的随身物品一件没领到，而且扣押清单也没有，这可是程序性的文件，希望给一个合理的说法。</p>
-            <p style="text-indent:2em;"><b style="color:var(--warning);">法律依据：</b></p>
+        </section>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
             <p style="text-indent:2em;">
                 《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
-                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank">查看原文</a>
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
             </p>
-            <ul></ul>
-                第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
-            </ul>
-            <ul>第七条  现场执法视音频记录应当重点摄录以下内容：
-                <li>（一）执法现场环境；</li>
-                <li>（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
-                <li>（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
-                <li>（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
-                <li>（五）其他应当记录的重要内容。</li>
-            </ul>
-            <p style="text-indent:2em;"></p>
-                <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank">点击查看案发地点图片（访问码：7yfj）</a>
-            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
+        </ul>
+        </ul>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
+
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
+        
         </section>
         <section id="section-20241113 15时许">
             <h2>2024年11月13日 15时许</h2>
             <p style="text-indent:2em;">王贵平到贵阳市公安局云岩分局督察大队举报，毓秀路派送所。</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题1：</b>ppp</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题2：</b>ppp</p>
-            <p style="text-indent:2em;"><b style="color:var(--danger);">存在问题3：</b>ppp</p>
-            <p style="text-indent:2em;"><b style="color:var(--warning);">法律依据：</b></p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题1：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题2：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:#ff1744;">存在问题3：</b>ppp</p>
+            <p style="text-indent:2em;"><b style="color:hsl(49, 100%, 44%);">法律依据：</b></p>
             <p style="text-indent:2em;">
                 《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号），
-                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank">查看原文</a>
+                <a href="https://www.xiangshan.gov.cn/art/2020/1/21/art_1229682852_4092176.html" target="_blank" style="color:#80d0ff;text-decoration:underline;">查看原文</a>
             </p>
-            <ul>
-                第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
-            </ul>
-            <ul>第七条  现场执法视音频记录应当重点摄录以下内容：
-                <li>（一）执法现场环境；</li>
-                <li>（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
-                <li>（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
-                <li>（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
-                <li>（五）其他应当记录的重要内容。</li>
-            </ul>
-            <p style="text-indent:2em;"></p>
-                <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank">点击查看案发地点图片（访问码：7yfj）</a>
-            </p>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">
+            第六条  开展现场执法视音频记录时，应当对执法过程进行全程不间断记录，自到达现场开展执法活动时开始，至执法活动结束时停止；从现场带回违法犯罪嫌疑人的，应当记录至将违法犯罪嫌疑人带入公安机关执法办案场所办案区时停止。
+        </ul>
+        </ul>
+        <ul style="font-size:0.95em; color: #4caf50; text-indent:2em;">第七条  现场执法视音频记录应当重点摄录以下内容：
+            <li style="list-style-type:none;text-indent:2em;">（一）执法现场环境；</li>
+            <li style="list-style-type:none;text-indent:2em;">（二）违法犯罪嫌疑人、被害人、被侵害人和证人等现场人员的体貌特征和言行举止；</li>
+            <li style="list-style-type:none;text-indent:2em;">（三）重要涉案物品及其主要特征，以及其他可以证明违法犯罪行为的证据；</li>
+            <li style="list-style-type:none;text-indent:2em;">（四）执法人员现场开具、送达法律文书和对有关人员、财物采取措施情况；</li>
+            <li style="list-style-type:none;text-indent:2em;">（五）其他应当记录的重要内容。</li>
+        </ul>
+
+        <p style="text-indent:2em;"></p>
+            <a href="https://cloud.189.cn/t/7zmqqeUfIvme" target="_blank" style="color:#80d0ff;text-decoration:underline;">点击查看案发地点图片（访问码：7yfj）</a>
+        </p>
+        <p style="text-indent:2em;"></p>
+        
         </section>
-        <section id="section-2024年11月13日 16:06:15"></section>
+        <section id="section-2024年11月13日 16:06:15">
             <h2>2024年11月13日 下午</h2>
             <p>时间：2024年11月13日 16:06:15</p>
             <p>地点：贵阳市毓秀路派出所</p>
+
             <h3>地点一：服务大厅</h3>
-            <!-- 对话内容略，原样保留 -->
             <p>民警：你当时着（被抓）的时候你咋不讲呢？你现在那个。你好久出来的嘛？</p>
             <p>王贵平：2013年1月20号（口误应该是2023年）。</p>
-            <!-- ...（中间内容省略，原样保留）... -->
+            <p>民警：等于说当时你在打架，后面讲你抢手机？</p>
+            <p>王贵平：他后面给我做成抢手机，然后我去看守所才晓得呢，才反应过来。</p>
+            <p>民警：当时法院判的时候你咋（没讲）……</p>
+            <p>王贵平：我讲的，讲的，讲的没用。</p>
+            <p>民警：刚哥，王贵平的这个你有印象没有？说他打架被关。当时打架被关了呢嘛。</p>
+            <p>民警：你，王贵平本人是吗？</p>
+            <p>王贵平：是的。</p>
+            <p>民警：现在，刚才是个啥情况嘛？</p>
+            <p>王贵平：那天法院判的时候呢，上面写的这么多东西晓得吧，这么多证据，但是这些视频，呃就是那个……那天晚上的视频呢，就是我打人的那个视频都有，但是没有这个手机。（案发现场）那里有个公安岗亭，等于是在那个公安岗亭内出的案，但是公安岗亭内的那个视频没有。我就是着（被关）得莫名其妙的，就是！</p>
+            <p>民警：那打架的人呢，他说他抢手机的这个。</p>
+            <p>民警：带他去找钟所长呀。</p>
+            <p>民警：你这些东西在哪得的嘛？</p>
+            <p>王贵平：我自己打的。</p>
+            <p>民警：查阅档案你自己也查不到呀。</p>
+            <p>王贵平：我申请……</p>
+            <p>民警：申请对公嘛，还是对私呀，申请你肯定也查阅不到呀。你觉得这个案子有问题，你可以送（哪样）律师（呀），送哪……</p>
+            <p>王贵平：你看这个证据写是写这么多，但是我一样都没看着呀！</p>
+            <p>民警：这个（申请材料）东西。我暂时拿着一分钟，等一会儿我还你哈。</p>
+            <p>民警：先等一下哈，我和我们领导讲了。</p>
+            <p>王贵平：好的好的。</p>
+
+            <h3>地点二：服务大厅旁边的保管室</h3>
+            <p>民警：坐。（王贵平坐下）</p>
+            <p>A民警（有点像领导）：你来干啥？</p>
+            <p>王贵平：呃</p>
+            <p>A民警（有点像领导）：你来干啥？</p>
+            <p>王贵平：就是我那个（案子），他给我做成抢劫罪。我很莫名其妙的……</p>
+            <p>A民警：你坐了多少年嘛？</p>
+            <p>王贵平：四年。</p>
+            <p>A民警：你咋不上诉呢？</p>
+            <p>王贵平：上诉？上的呀。</p>
+            <p>A民警：然后呢？上诉，判了没有嘛？</p>
+            <p>王贵平：他搞一个，维持原判。</p>
+            <p>A民警：那么，你来找我们干啥呢？这个事！判都判了，你来找我们干啥呢？你，这个（查阅申请材料），这个东西是哪个拿给你的嘛？</p>
+            <p>王贵平：我自己做的。</p>
+            <p>A民警：个人哪会调得了东西！个人你调不到这些东西啊。你的律师，你有律师没有嘛？</p>
+            <p>王贵平：律师，没请。</p>
+            <p>A民警：你这个只有去申请，申请最高法复核。哪里会有你这种说法。</p>
+            <p>B民警：这个不该找侦查机关，应该找法院。</p>
+            <p>王贵平：法院我找过了的。</p>
+            <p>B民警：法院找了，你问一下律师哈。啊，第一……</p>
+            <p>A民警：（看完判决书）啊，你把人家手机拿了，把人家打了，就是抢劫啊。</p>
+            <p>王贵平：这是你们（派出所）写的，你们这里面写的……</p>
+            <p>A民警：你打人家没有嘛？</p>
+            <p>王贵平：打的呀。</p>
+            <p>A民警：你拿人家手机没有嘛？</p>
+            <p>王贵平：打和抢是两回事。</p>
+            <p>B民警：错！</p>
+            <p>A民警：你把人家手机拿了没有？</p>
+            <p>B民警：你说错了，兄弟。我给你讲，有个人……</p>
+            <p>A民警：我给你打个比方，你可能不懂。我想偷你的手机，结果被你发现了，在这个时候，手机虽然说拿在你手上，结果被人家……</p>
+            <p>王贵平：但是那个手机我看都没看到过哈。</p>
+            <p>A民警：结果，不管为啥，你为了拿这个东西打了我一拳，你就是抢劫，就这么简单。</p>
+            <p>B民警：盗窃转换为抢劫。</p>
+            <p>A民警：这个，哪有你这种说法，国家犯罪成本这么低，呃，大家都可以犯罪了，不行嘛！</p>
+            <p>王贵平：凡事，要讲个证据喽，这个！</p>
+            <p>A民警：你打人家没有嘛？</p>
+            <p>王贵平：打的，和（抢是两码事）……</p>
+            <p>A民警：拿到手机没嘛？</p>
+            <p>王贵平：不得（没有）！</p>
+            <p>A民警：你打人家干啥呢？</p>
+            <p>王贵平：那天出了点……</p>
+            <p>A民警：你打人家干啥嘛？你打人家又没*手机。</p>
+            <p>王贵平：那天情绪有点那个（失控）。</p>
+            <p>A民警：那，你打人家了呢嘛。</p>
+            <p>王贵平：打和抢不是一回事！</p>
+            <p>A民警：你拿人家手机呀。</p>
+            <p>王贵平：没拿。</p>
+            <p>A民警：没拿这个手机，你不会打人家啊？</p>
+            <p>王贵平：啊？</p>
+            <p>A民警：你不为这个手机，你不会打人家啊？</p>
+            <p>王贵平：那这个手机在哪里喽？监控在哪里喽，问题是？</p>
+            <p>A民警：我不想和你讲这些，在哪里。我只晓得判决书在这里。</p>
+            <p>B民警：这个，判都判了。你一审判的时候你咋不上诉啊？</p>
+            <p>某民警：～～（该部分语音辨识不清）所有的证据，所有啥东西我们都是移交法院了～（实在听不清楚他说啥，翻译不过来）。</p>
+            <p>B民警：你如果认为，你这个有问题，你直接去找判决法院。我们只能以我们收，我们收集的证据，提交检察院，检察院提交法院。</p>
+            <p>A民警：你这个只有申请最高法复核。你认为你这个是啥子嘛，你认为就是个打架？</p>
+            <p>王贵平：就是个打，打人。</p>
+            <p>B民警：这个东西……</p>
+            <p>A民警：我直接给你讲。啊，判都判了，上诉也维持原判，那么就说明，我个人，虽然不是我办的，但是我个人认为，如果维持原判的话，证据链是完整的，并且是合法有效的。</p>
+            <p>C民警：你如果认为，证据有问题，在过程中对你的认定还是有问题，你依然可以找法院哈，这个早就移送到～（方言不好翻译，省略了）</p>
+            <p>A民警：你在哪里坐的嘛？</p>
+            <p>王贵平：嗯？</p>
+            <p>A民警：你在哪里坐的呢？</p>
+            <p>王贵平：北斗山。</p>
+            <p>A民警：那么，那期间你没有申请啊？</p>
+            <p>C民警：检察院也会起诉的啊。</p>
+            <p>（A、B）警：他上诉了的，上诉维持原判。嗯，（对王贵平说）是不是啊？啊，你上诉……</p>
+            <p>王贵平：维持原判。</p>
+            <p>A，B，C警：对了，是终审啊，那就再上啊。</p>
+            <p>王贵平：你看，这些都是法院的，那个证据。这个证据哪有（抢手机）</p>
+            <p>A民警：啊。</p>
+            <p>王贵平：这是从法院调的证据，你看哪里有我抢的手机嘛，图片也没有一张！</p>
+            <p>A民警：这个你在哪里得的嘛？</p>
+            <p>王贵平：法院调的啊。</p>
+            <p>B民警：你如果认为，这个东西……你可以去法院……</p>
+            <p>A民警：这上面，你的便捷有的呀。“有异议，我是治安案件，没有抢劫”，人家给你记了的呀。人家这个不是，凭你认为是啥就是啥。法院审理综合多种证据认定下来，才认定你是抢劫啊。</p>
+            <p>王贵平：这个就是那个法院掌握的所有的东西。</p>
+            <p>A民警：不可能，这个是法院的判决卷，不是公安的侦查卷，啊。这个是法院的卷，不是公安的卷。</p>
+            <p>王贵平：你看这上面它（王贵平在云岩区法院拷贝的正卷存在手机里）写的是证据材料是吧？相关证据材料，你好好看一下，有哪一个证据是有手机的？</p>
+            <p>A民警：那么我就这样跟你讲，判了，法院判了，啊！请你去申请最高法院复核，完了。你个人来调东西，首先我们这里调不到，另外一个，我们也不会提供给个人。</p>
+            <p>C民警：卷也不在我们手上。</p>
+            <p>A民警：也不在我们手上，你坐着。</p>
+            <p>C民警：那么，直接去最高法院……</p>
             <p>（王贵平最后无功而返）</p>
         </section>
-        <section id="section-20241216"></section>
-            <p>时间：2024年12月16日 11:37:34（左右）</p>
+        <section id="section-20241216">
             <p>地点：贵阳市毓秀路派出所</p>
+            <p>时间：2024年12月16日</p>
             <h3>对话内容</h3>
-            <!-- 对话内容略，原样保留 -->
             <p>A民警：现在住哪里？</p>
-            <p>王贵平：现在住龙里。</p>
-            <!-- ...（中间内容省略，原样保留）... -->
+            <p>王贵平：现在住*****。</p>
+            <p>A民警：贵阳没住住呢嘛。</p>
+            <p>王贵平：嗯，没有。</p>
+            <p>A民警：电话号码是好多？</p>
+            <p>王贵平：138*****983。</p>
+            <p>A民警：有职业没有？</p>
+            <p>王贵平：现在生病，暂时还没有。</p>
+            <p>A民警：文化程度？</p>
+            <p>王贵平：高中。</p>
+            <p>A民警：今日来派出所是因为什么事？</p>
+            <p>王贵平：因为……这些事情，我都写在上面（提前准备的资料）的，麻烦你看，哈。在那个110（报警系统）上面也有。</p>
+            <p>A民警：这个我倒是看了，那么你今天来是因为啥你要给我讲啊。</p>
+            <p>王贵平：呃。</p>
+            <p>A民警：今天你来我们派出所是因为啥？</p>
+            <p>王贵平：嗯，我那天通过110呢，本来是向贵阳市公安局报的警，然后我不知道它为啥，为啥会接到你们派出所。然后呢，当天了，你们派出所又打电话喊我来核实情况，所以呢，我今天就来了。就是这么个情况。</p>
+            <p>A民警：核实啥嘛？</p>
+            <p>王贵平：这个是你们派出所的人打电话叫我过来的，我也不晓得核实啥。</p>
+            <p>A民警：派出所的人打的嘛。</p>
+            <p>王贵平：唉。顺便这个手机的，叫啥，指控的证物也有问题。</p>
+            <p>A民警：啥指控的证物有问题嘛？</p>
+            <p>王贵平：这个手机的真实性有点问题啊！我觉得。</p>
+            <p>A民警：手机，啥手机真实性有问题吗？</p>
+            <p>王贵平：就是这个案件的手机的那个，本来我（案发）之前用的手机就是oppo手机呢。</p>
+            <p>A民警：嗯，然后呢？</p>
+            <p>王贵平：然后他指控我的手机，我也没见过，照片我也没看到。</p>
+            <p>………</p>
+            <p>王贵平：麻烦你把它拷一份，或者复印一份。</p>
+            <p>A民警：啊？</p>
+            <p>王贵平：免得……我说麻烦你照个片或者是那个，到时候大家都好那个。到时候我来了，你，你，问你你不要说没这回事的话，那个就……</p>
+            <p>A民警：看不懂。</p>
+            <p>王贵平：咋会看不懂呢，这么简单。</p>
+            <p>A民警：确实看不懂。在哪里（2019年1月20日晚在派出所）被打了？</p>
+            <p>王贵平：就在值班室外面，我不晓得在哪里，有点像个房间里面，又像房间，又不晓得是不是房间，可能是更衣室我估计。</p>
+            <p>A民警：派出所吗，还是哪里嘛？</p>
+            <p>王贵平：就在派出所。</p>
+            <p>A民警：哪里的派出所？</p>
+            <p>王贵平：就在你们毓秀路派出所。</p>
+            <p>A民警：好久的事情？</p>
+            <p>王贵平：2019年1月20号晚上。</p>
+            <p>A民警：你说你晕倒，你咋会晓得你被别人扶到树下呢？</p>
+            <p>王贵平：我醒来就在那里的噻，没人扶我，我咋会被移到那个树下面呢。</p>
+            <p>A民警：路边么，还是哪里吗？</p>
+            <p>王贵平：啊？</p>
+            <p>A民警：是路边么，还是哪里嘛？</p>
+            <p>王贵平：你讲的是？</p>
+            <p>A民警：晕倒。</p>
+            <p>王贵平：晕倒就在（大十字）广场中心那里。</p>
+            <p>A民警：你说你下午苏醒后，因路人言语难听，咋个难听嘛？</p>
+            <p>王贵平：可能就是因为早上遭骂后，可能就是听人说话（情绪）不那个。</p>
+            <p>A民警：人家说啥嘛？</p>
+            <p>王贵平：那个时候，晕倒刚醒来，可能也没想到这么多，还可能就是。</p>
+            <p>A民警：等于你不知道人家说啥呢嘛。</p>
+            <p>王贵平：啊！</p>
+            <p>A民警：你不晓得对方讲啥呢嘛。</p>
+            <p>王贵平： 哎。</p>
+            <p>A民警：那么不知道对方说了什么，咋会有言语难听一说呢？</p>
+            <p>王贵平：可能他就是说话有点，咋讲呢哈，反正就是带黄腔的那种嘛，可能就是。</p>
+            <p>A民警：你都不晓得他讲的是啥东西，现在。呃带黄腔，我也搞不清楚。</p>
+            <p>王贵平：总的反正就是一个情绪的问题，没控制好。</p>
+            <p>A民警：你这个，你说的是语言与难听，你又不晓得对方讲的是啥东西。那你又是和哪个发生肢体冲突嘛？</p>
+            <p>王贵平：这些和这个案件没关系呀？</p>
+            <p>A民警：那么，你给我讲嘛，啥和这个案件有关系喽。</p>
+            <p>王贵平：就是那个手机的问题啊。</p>
+            <p>A民警：啥手机？</p>
+            <p>王贵平：就是只跟我抢的那个手机啊。</p>
+            <p>A民警：指控你抢的手机。等于你今天来，是说是派出所的民警人打的呢嘛，是这个意思吗？</p>
+            <p>王贵平：在派出所，除了民警还有谁敢打人？</p>
+            <p>A民警：我在问你，你不要反问我，我咋晓得！我是在问你，啊你是在向我反映，被警察殴打是吗？时间是1月20日晚上23点左右是吗？</p>
+            <p>王贵平：时间是在晚上21:00~23:00左右，反正就是在这段时间。</p>
+            <p>A民警：21:00~23年左右，是不是这个意思？</p>
+            <p>王贵平：那（材料）上面都写的很清楚的嘛？</p>
+            <p>A民警：我问你，不是说那上面清楚嘞！我看不懂，我就跟你讲，你要（我）咋讲。</p>
+            <p>王贵平：反正就是大概（晚上）9:00~12:00那段时间。</p>
+            <p>A民警：接近（晚上）12点是不是嘛？</p>
+            <p>王贵平：诶，接近晚上12点。</p>
+            <p>A民警：你说一下事情的经过。</p>
+            <p>王贵平：经过那（材料）上面都写的有啊。</p>
+            <p>A民警：刚刚我在讲因为啥被打这些，你说那不是重点，那么我就问你重点你讲给我听啊， 经过，是因为啥嘛！你讲给我听啊，是因为啥嘛？</p>
+            <p>王贵平：重点就是因为那天我打那个人，然后后面把我指控成抢劫。那这个证物手机的真实性，我不晓得是咋个证明这个，我没看到过手机。</p>
+            <p>A民警：几点钟打的人嘛？</p>
+            <p>王贵平：你讲的是我在那边（大十字广场）几点钟打的人是吧？</p>
+            <p>A民警： 诶，你不是说你打人呀，几点钟打的人嘛？</p>
+            <p>王贵平：我没带时间，上面写的是大概是晚上，下午18点左右吧，18点30分左右好像。</p>
+            <p>A民警：18时左右是不是嘛？</p>
+            <p>王贵平：判决书上是这么写的。</p>
+            <p>A民警：你在广场中心把人打了是吗？</p>
+            <p>王贵平：不是广场中心，是广场的边上挨着河西路的那点，那点还有个公安岗亭。</p>
+            <p>A民警：是你把人家打了，在河西路口那里呢嘛？</p>
+            <p>王贵平：就是在广场上挨着河西路边。</p>
+            <p>A民警：你把人打了是吗？</p>
+            <p>王贵平：诶。</p>
+            <p>A民警：对方是男的还是女的嘛？</p>
+            <p>王贵平：男的。</p>
+            <p>A民警：打了，然后呢？打了人然后呢？</p>
+            <p>王贵平：打了人，然后被他们（被害人，还有其他人）反应过来，就把我送到那个公安岗亭里面去。</p>
+            <p>A民警：是送到公安岗亭，还是哪样？</p>
+            <p>王贵平：公安岗亭里面。</p>
+            <p>A民警：然后呢？</p>
+            <p>王贵平：然后我等了大概半个小时以后……</p>
+            <p>A民警：里面有人没有嘛？</p>
+            <p>王贵平：我在里面的时候没有人，就是我一个。</p>
+            <p>A民警：等于对方把你送到里面，你就一个人在里面摆起呀？</p>
+            <p>王贵平： 唉。</p>
+            <p>A民警：那两个没和你在一起呀？</p>
+            <p>王贵平：那两个我不晓得，应该是在外面嘛。具体情况反正我也不清楚，反正我在里面。</p>
+            <p>A民警：等于岗亭里面没人？</p>
+            <p>王贵平：没有。里面有监控的。</p>
+            <p>A民警：有啥控都没用，5年了。</p>
+            <p>王贵平：这个时间不存在问题嘛。</p>
+            <p>A民警：那么，证明你不懂呢嘛。</p>
+            <p>A民警：大概等了半个小时的样子就有民警，是不是嘛？</p>
+            <p>王贵平：唉。</p>
+            <p>A民警：着装没有？</p>
+            <p>王贵平：现在我记不清楚了。</p>
+            <p>A民警：最后警察来干了啥呢？</p>
+            <p>王贵平：最后警察来就是，他喊我把身上的东西掏出来，放在那个凳子上。</p>
+            <p>A民警：警察来岗亭里，喊你把身上的东西掏出来是不是嘛？</p>
+            <p>王贵平：诶，就是随身物品。</p>
+            <p>A民警：放在岗亭里的凳子上是不是嘛？</p>
+            <p>王贵平：唉，里面有一个长凳子。</p>
+            <p>A民警：之后呢？</p>
+            <p>王贵平：掏出来以后，然后过一段时间好像，他做了登记以后，然后就，然后之后就给我上手铐嘛，就把我送到派出所来了，好像是打开执法记录仪的那天。</p>
+            <p>A民警：就是给你登记呢嘛？</p>
+            <p>王贵平： 唉，给我登记，但是没有手机哦。这个（纸质材料上写的）是我那天放在（岗亭里面的凳子）上面的东西。</p>
+            <p>A民警：给你登记完后，就有人给你上手铐是不是嘛？然后呢？</p>
+            <p>王贵平：然后就把我送到派出所来。然后送到派出所呆了差不多个把小时的时候，就在这个，这里应该是值班室嘛？</p>
+            <p>A民警：这里是值班室呀。</p>
+            <p>王贵平：就在值班室这里待了一个小时左右。然后就（被）带进调解室，那你是不是条件是嘛？</p>
+            <p>A民警：嗯。</p>
+            <p>王贵平：唉，先是（被）带进去那个调解室里面。然后又被带出去了，我不晓得是被带到哪个地方，不晓得是不是更衣室或者是，反正就是在一个房间里面。可能没监控里面。</p>
+            <p>A民警：被带到调解室，又被带到房间里，哪里的房间嘛？</p>
+            <p>王贵平：我不晓得，反正就是，这里（指责值班室门外左侧的屋子）。</p>
+            <p>A民警：然后呢？</p>
+            <p>王贵平：然后就招电棍，甩棍那些（违法使用警械）招呼了噻。</p>
+            <p>A民警：没其它呢嘛？</p>
+            <p>王贵平：反正到晚上12点左右的时候，再被带到那个，应该是讯问室嘛里面，就是那个，就是，开始做笔录的那里面是不是讯问室嘛？</p>
+            <p>A民警：你讲哪里？哪里做笔录？是在派出所里面，还是在哪？</p>
+            <p>王贵平：就在派出所（里），这里嘛。</p>
+
+            <p>时间：2024年12月16日 13:24:53（左右）</p>
+            <p>地点：贵阳市毓秀路派出所</p>
+            <p>实际做笔录A警：录笔录中，王贵平确认，已经改了两次，此次是第3次核对笔录内容</p>
+            <p>王贵平：这一张，这个字有点问题，应该是带言字旁那个讯，是讯问，不是询问，其他的都没啥问题。</p>
+            <p>A民警：签字。</p>
+            <p>王贵平：等于……你们先签嘛。</p>
+            <p>A民警：啊，我说是你看过了签字，后面他们会过来签字的。</p>
+            <p>王贵平：你们先签，我先去吃饭，吃饭完了，是哪个询问的，哪个签哈。</p>
             <p>A民警：去（吃饭）呀。</p>
+            <p></p>
+            <p style="text-indent:2em;">接下来的内容是，做笔录的民警回来后，王贵平让他出示警察证，是一个叫何某康的民警出示，但王贵平这次请求现制作询问通知书，何警官说不能，只能制作报案回执，因此，最终王贵平没有在询问笔录上签字，对方也兑现了开具报案回执的事，但是当王贵平回到家发现报案回执记录王贵平的联系电话和现住地址居然是假的。这样明显的问题是实事求是的体现吗？</p>
+            
+<!-- 添加锚点 -->
+<section id="section-20241218-112741">
+    <p><strong>2024-12-18 11：27：41 王贵平接到贵阳市云岩区毓秀路派出所电话</strong></p>
+    <p>王贵平：喂，你</p>
+</section>
+<p>A 警：喂。</p>
+<p>王贵平：你好。</p>
+<p>A 警：喂你是不是说你随身物品在派出所不见了。</p>
+<p>王贵平：对。</p>
+<p>A 警：你直接就排出来嘛。</p>
+<p>王贵平：直接派出所。</p>
+<p>A 警：直接到派出所了就行。</p>
+<p>王贵平：问题是找到没得了？</p>
+<p>A 警：嗯，你来派出所问，办案民警呢，你不晓得的嘛，他们系统里面查得到的，你过来嘛。</p>
+<p>王贵平：系统里面查得到。</p>
+<p>A 警：查得到办案的哪个。</p>
+<p>王贵平：哦，好好好。</p>
+<p>A 警：直接过来嘛。</p>
+<p>王贵平：诶，好，麻烦了。</p>
+<p>A 警：，呃，没有。</p>
+<p>王贵平：唉我过来找哪个？（电话已挂断）</p>
+
+<p><strong>地点：贵阳市毓秀路派出所<br>时间：2024-12-18 13：46：43</strong></p>
+<p>王贵平：唉，警官你好，请问一下，刚才11点半的时候是哪个打我的电话？</p>
+<p>B 警：11点半，哪个给你打，你是干啥的嘛？</p>
+<p>王贵平：就是那个随身物品（事情）的那个呢。</p>
+<p>B 警：随身物品，是好久的事情？</p>
+<p>王贵平：今天11:30的时候有你们所的人给我打电话……</p>
+<p>B 警：你是啥情况？是以前被他们处理的是不是嘛？是哪个办的案嘛？</p>
+<p>王贵平：我不晓得呢。</p>
+<p>B 警：你不晓得我咋给你找人呢？</p>
+<p>王贵平：刚才这个是不是你们所的电话嘛？</p>
+<p>B 警：是的呀。</p>
+<p>王贵平：哎，是哪个打的喽？你看，11:27打的。</p>
+<p>B 警：你听哈像不像我的声音嘛？</p>
+<p>王贵平：我不晓得。</p>
+<p>B 警：呃，你是啥情况，你讲情况，我给你解决就可以了，解决不了，我也没有法，晓不晓得。</p>
+<p>王贵平：等于就是我的那个……</p>
+
+<p><strong>2024-12-18 13：53：27</strong></p>
+<p>B 警：（查电脑系统）你身份证号是多少？</p>
+<p>王贵平：……232230</p>
+<p>B 警：王贵平是吧？</p>
+<p>王贵平：对。</p>
+<p>B 警：你眼睛花了是吧，咋会搞个眼镜戴起呢？之前你都没戴眼镜呢嘛？</p>
+<p>王贵平：有近视。</p>
+<p>B 警：有近视！</p>
+<p>王贵平：我的随身物品是不是……是不是我讲的情况？</p>
+<p>B 警：我咋晓得？</p>
+<p>王贵平：上面都写得有的嘛！</p>
+<p>B 警：我不敢乱讲啊，哥哥，对不对？</p>
+<p>王贵平：呃。</p>
+<p>B 警：因为你的这个事情又不是我那个的，对不对？</p>
+<p>B 警（对其它人说话）：那个……这里有个叫王贵平的，说他啥银行卡……这里有个叫王贵平的，说的他啥银行卡没拿（返还）……19年着（被抓的）的哈？</p>
+<p>王贵平：19年。</p>
+<p>B 警：哦，哦，等于你们处理过的是吧？好，好，好好，好好好好，我晓得了。好，拜拜。</p>
+<p>B 警：你是不是大十字抢劫着（被抓）的那个嘛？</p>
+<p>王贵平：那个啥抢劫嘛，打人！</p>
+<p>B 警：哦，是，应该就是，好，好好，好好。他们说的，他们给你处理过了的，哈。</p>
+<p>王贵平：处理过了是吧？就是我的随身物品是咋处理的嘛？</p>
+<p>B 警：你问他……问我有啥意义呢？又不是我给你处理的！</p>
+<p>王贵平：嘿，嘿嘿。</p>
+<p>B 警：你别和我笑呢，真的呢</p>
+<p>王贵平：等于就是……</p>
+<p>B 警：我是好心给你问呢！</p>
+<p>王贵平：哦，好，麻烦，那我就回去了呢。</p>
+<p>B 警：呃。</p>
+<p>王贵平：好。</p>
+
+
+<p><strong>发生地点：</strong>贵阳市公安局云岩分局督察室</p>
+<!-- 添加锚点 -->
+<section id="section-20241218-164339">
+    <p><strong>对话时间：</strong>2024年12月18日16:43:39</p>
+    <p><strong>王贵平（00:15）：</strong> 还有个问题，就是我刑事拘留通知书我家都没收到。</p>
+</section></section>
+<p><strong>胡督察（00:42）：</strong> 只有两个判决是吧。</p>
+<p><strong>王贵平（00:46）：</strong> 而且这个判决的哈，现在这个法官遭督查了。</p>
+<p><strong>胡督察（00:49）：</strong> 哪些法官的事，属于法院，我给你处理不了。</p>
+<p><strong>王贵平（00:54）：</strong> 但是这个，这个裁定书，它说的，和那个法院说的不一样，它法院存档的是669号，我都收到的是667号。</p>
+<p><strong>胡督察（01:07）：</strong> 呵，这个我给你（处理不了）。</p>
+<p><strong>王贵平（01:10）：</strong> 好好，不关你们公安的事，只不过，这个信息我还是提供一下嘛，比较好的。这个健康档案就是你们公安机关的事。警官我借支笔用一下，我没带笔。</p>
+<p><strong>胡督察（02:17）：</strong> 桌子上。你看一下。</p>
+<p><strong>胡督察（02:56）：</strong> ～～～～～～～～～～～～～～～～～～</p>
+<p><strong>王贵平（04:20）：</strong> 哦这就是110那个截图。</p>
+<p><strong>胡督察（04:39）：</strong> 你就说是啥子问题？～～～～～～～～～～～～～～～～～～</p>
+<p><strong>胡督察（05:31）：</strong> 你好。</p>
+<p><strong>胡督察（06:10）：</strong> ～～～～？～～～～～～～～～。～～～～～～～～～。～～～～，～～～～，～～～～，～～～～。这儿,笔.</p>
+<p><strong>王贵平（07:00）：</strong> 好，谢谢。还有那个OPPO的账号，我应该注明一下哦</p>
+<p><strong>胡督察（07:20）：</strong> 你这个东西，我给你呢，这个东西我给你核实不到。因为主要是 ,这个东西，具体涉不涉案，办案单位来主要核实的，就是你这东西，你认为他不是，你这个,抢OPPO手机并不是的，它并是让你抢的，是你自家的,主要是你跟法院提出来。</p>
+<p><strong>王贵平（07:43）：</strong> 这个法院呢，因为我在法院的时候，那时候（开庭时）已经记不起了，我也不晓得那哈（时）～～～～～～～</p>
+<p><strong>胡督察（07:49）：</strong> 这些，现在我跟你讲的是，这些程序上的东西，或者是民警有没有对你进行了刑讯逼供，这些都是我们来核实。但是针对你这个案子，你对他们这个证据，就是你，就派出所的提供出来的这些验证资料，说它证据真实性存疑。这些是跟法院提出来。</p>
+<p><strong>王贵平（08:09）：</strong> 跟法院提出来</p>
+<p><strong>胡督察（08:11）：</strong> 对，因为你去排除它的证据材料。这些是你，你自家，你有，当时你应该有律师的嘛，律师会</p>
+<p><strong>王贵平（08:17）：</strong> 没没得没得没得没。</p>
+<p><strong>胡督察（08:19）：</strong> 反正法律哈，不管你是，不管去法院再提出申诉这块，你要排非公安机关的证据，你自家你，你要质证。</p>
+<p><strong>王贵平（08:27）：</strong> 你的意思就是我去法院，去把～～～～～～～</p>
+<p><strong>胡督察（08:30）：</strong> 你要是，你要质证，比如说这个东西，这个手机是我自家的，并不是我，并不是我抢劫的。这些事，法院它会有个定夺，啊。因为只是我现在从案子上来看，哎上面就是说扣押呀那这些，哎，这确实扣的OPPO手机，并且已经发还，还有受害人的笔录啊这些，我现在从程序上来看是没问题的得，至于你所谓的这个证据，证据排非这个东西。哎比如说，你说这个OPPO手机是你自家的，并不是你抢啊这些呢，所以呢在法院里面，你可以给他们提出来。</p>
+<p><strong>王贵平（09:03）：</strong> 法院呢，现在我正在准备申诉，但是。</p>
+<p><strong>胡督察（09:06）：</strong> 是啊。</p>
+<p><strong>王贵平（09:07）：</strong> 还没得～～～</p>
+<p><strong>胡督察（09:08）：</strong> 指明，至于你之前反映的，说的啥子扣押你的物品啊，没有归还也好，那个刑讯逼供的也好，这些东西我肯定是要查。我刚讲的，之前讲的，我也正准备去调你这些啥子清单啊这些，哈。但是这些你也提供出来了，但是你这个OPPO手机究竟是归属于哪个的，嘿我给你落实不到。</p>
+<p><strong>王贵平（09:29）：</strong> 呃，就是这个OPPO手机，它是真实性，就是它这个真实性。</p>
+<p><strong>胡督察（09:33）：</strong> 我意思说这个OPPO手机究竟是你的也好，还是所谓的受害人，所谓的让你抢夺的也好。这个东西我咋给你证实，这个我给你证实不到。</p>
+<p><strong>王贵平（09:44）：</strong> 就是他，既然他指控我有这个行为，他应该有那个视频啊。</p>
+<p><strong>胡督察（09:49）：</strong> 是啊，所以我讲的，至于你对公安机关的，的证据材料提出异议的，应该在法院部门进行提出，并不是向我们，跟我们提出，哈。而且它这个法院一判，反正两次庭，两次是庭审喽，都作出决定，都是维持原判 。所以你要庭上，你要质证出来，你跟我讲这个东西没用得，是不是？</p>
+<p><strong>王贵平（10:09）：</strong> 那也行，反正我提交了，你办不办嘛，那个是～～～。</p>
+<p><strong>胡督察（10:12）：</strong> 哎，你，至于你讲的啥子民警，这个执法啊、徇私枉法啊、刑讯逼供啊，这个东西，哎是我分内之事，啊 。只是你说的这个证据是不是应该排非还是，这个东西是你跟法院提出来的东西，因为法院才是这个审判机构，啊我不是在这个审判。至于法院的判决呢，我也推翻不到它的。只有它提出的法院里面啥子文号错误啊这些，我也修改不了的，这不是我们做出来的东西，啊，因为公检法是三家是分开的单位。</p>
+<p><strong>王贵平（10:39）：</strong> 哎，好。</p>
+<p><strong>胡督察（10:39）：</strong> 因为它法院是作为这个裁判裁决单位呢嘛哈，哎你有，你可以提供你自家的印证资料。对公安机关提出的呃，证据材料啊这些进行那个否定啊，这是你的权利哈。当然你也要提供你自己的印证资料，要把它还原 。为啥采纳你的喽，是不是啊？</p>
+<p><strong>王贵平（10:58）：</strong> 哎，好好好。另外一个，那个拘留通知书，那应该是属于你们公安的。</p>
+<p><strong>胡督察（11:03）：</strong> 拘留通知书，那个是，但是印象当中，哈，我看，因为我现在我还没看到，我印象当中好像是有个，通过挂号信的形式寄出去了的。</p>
+<p><strong>王贵平（11:13）：</strong> 我问我家老的，他说他没收到。</p>
+<p><strong>胡督察（11:15）：</strong> 它这个东西，到时候我再落实一下呢嘛哈。但是说如果寄了挂号信，它应该是会有个底单的。因为按照道理来讲，如果是官家拘留你嘛，肯定要通知，通知你或者家属，但你在拘留区，肯定要通知你家属呢嘛哈 ，哎我再落实一下。就反映的，现在我们核实的就是你遭刑讯逼供的问题；二就是那个拘留通知书没通知家属的问题；哎第三个嘛，就是说的是那个是扣押的物品的问题呢嘛。</p>
+<p><strong>王贵平（11:42）：</strong> 哎还有，就是扣押物品它是</p>
+<p><strong>胡督察（11:44）：</strong> 但是我给你讲的，扣押物品，我看扣押物品清单，上面只有个OPPO手机，是已经发还给受害人了的。诶，涉案的才是扣押，不涉案的就说的是涉案人员随身物品管理台账，但是管理台账上面你签了字的，这张银行卡，所以这个东西呢，我就给你答复喽。</p>
+<p><strong>王贵平（12:02）：</strong> 是只有一张银行卡。</p>
+<p><strong>胡督察（12:04）：</strong> 上面你签字的噻，不可能给你核实四年前。我不可能是神仙嘛，我跑去，我回复到四年前，我看到现场的 ，有哪些东西啊这些。我说的我确实哈，只能按照你的那个，台账的你签的字那个来认定。因为确认上面你了签字的，按手印的，上面只有一张银行卡，所以说我只能就是这样，所以说这个财物这块现在我又已经答复了。那另外两个问题我下来，我再，再落实，哈。</p>
+<p><strong>王贵平（12:27）：</strong> 但是那个事与实际不，不相不相符，就是。</p>
+<p><strong>胡督察（12:31）：</strong> 但我跟你核实不到呢嘛，你四年前的事情，你现在来跟我讲，我咋给你核实？</p>
+<p><strong>王贵平（12:37）：</strong> 但是他有执法记录仪，还有监控。</p>
+<p><strong>胡督察（12:39）：</strong> 监控，那公安机关，哎办案区里面那个监控哈，按要求不低于半年，6个月，你现在四年，咋个可能有？</p>
+<p><strong>王贵平（12:49）：</strong> 但是这个作为刑事案件～</p>
+<p><strong>胡督察（12:50）：</strong> 刑事案件，只是那个同步录音录像的，哎同步录音录像，但你这个随身物品，那不是对你进行讯问，啊。</p>
+<p><strong>王贵平（13:02）：</strong> 哦。</p>
+<p><strong>胡督察（13:02）：</strong> 确实那个东西我跟你无法解释，只能从现在那个台账上面，那就只有一张银行卡，我只能这样跟我跟你说。</p>
+<p><strong>王贵平（13:11）：</strong> 也就是说只能以那个为准呢嘛。</p>
+<p><strong>胡督察（13:13）：</strong> 我，在我这个地方，我肯定是只能以那个为准，因为虽然说，我们也是公安机关哈，但是呢，虽然说我们补办案件，但是我们要排除哪个哪个东西，就刚才讲的哎，你提出你的东西，哎办单位提出哪些东西，在办单位提供出来了，你提供出其它东西来，而且现场的监控啊这些，早已经被覆盖了的。所以说，现在我只能说的是，现在调查情况上面你签字了的，就只能认定这个东西。哈。</p>
+<p><strong>王贵平（13:38）：</strong> 这个行，那个呢，这个事情呢，咋讲呢哈。</p>
+<p><strong>胡督察（13:43）：</strong> 至于你反映到还有刑讯逼供的那个，到时候我再，我下来再落实，还有就是那个是，就是那个啥子？</p>
+<p><strong>王贵平（13:48）：</strong> 还有那个手机呢？</p>
+<p><strong>胡督察（13:48）：</strong> 家属通知书。</p>
+<p><strong>王贵平（13:50）：</strong> 就是那个手机的来源真实性。</p>
+<p><strong>胡督察（13:52）：</strong> 来源真实性嘛这下面我看了的，笔录里面他当时受害人也讲了的，哈OPPO手机，而且扣押清单，发还清单都签了。哎，至于你对这个派出所的这个，所有的这东西，应该是你的东西，跟法院提出来，哈。</p>
+<p><strong>王贵平（14:06）：</strong> 唉，好好好。</p>
+<p><strong>胡督察（14:10）：</strong> 诶，这上面东西我就先跟你收到，判决的两份，还有这个报案回执，这个健康体检，哈。</p>
+<p><strong>王贵平（14:20）：</strong> 诶，这些全部收嘛。</p>
+<p><strong>胡督察（14:21）：</strong> 具体我就不收了，啊因为这些，不收，我要收来，到时候，我咋，我咋给你附卷嘛，东西不，不涉及到这个事情的。</p>
+<p><strong>王贵平（14:31）：</strong> 啊，不涉及？</p>
+<p><strong>胡督察（14:32）：</strong> 嗯。</p>
+<p><strong>王贵平（14:32）：</strong> 行嘛，那你哪些东西收，你给我签个字嘛啊。</p>
+<p><strong>胡督察（14:36）：</strong> 给你签个字？那么这样啊，我在这上面我来给你登记起你交了哪些东西。电话是好多？</p>
+<p><strong>王贵平（15:55）：</strong> 13885444983。</p>
+<p><strong>胡督察（22:46）：</strong> 好，三个问题，一个是对其刑讯逼供，二个未向家属寄达拘留通知书。第三未对其随身物品进行登记，也是进行反映呢嘛。向我队提供：一、2019年的说健康档案；二、法院的那个，云岩区人民法院的初审判决 ；第二个就是中级人民法院的那个裁定书；第四个，就是那个12月6号的毓秀路派出所办理回执，哈。</p>
+<p><strong>王贵平（23:14）：</strong> 唉。</p>
+<p><strong>王贵平（23:36）：</strong> 三页。签在中间是吧？</p>
+<p><strong>胡督察（23:48）：</strong> 唉，你就写，以上对吧，以上四份材料由我本人提供。四份材料，日期写一个。</p>
+<p><strong>王贵平（24:26）：</strong> 12月18。</p>
+<p><strong>胡督察（24:33）：</strong> 他说啥子情况，到时候我跟你联系。因为之前讲的，因为你那个东西，四年以前的事情，所以说你当时那随身物品的东西，向我反映，到时候我再答复你一遍呢嘛，应该就是这个情况，因为你那个我确实跟你查不清楚了，啊。至于你刑讯逼供这个东西啊，还有就是拘留通知书那个，到时候我们这边会跟你联系的。</p>
+<p><strong>王贵平（24:54）：</strong> 大概是好多时候?</p>
+<p><strong>胡督察（24:55）：</strong> 因为按照公安机关受理这个举报投诉项目来讲，一般来说是30日呢嘛，特殊情况可以延长，但是呢肯定要不了那么久的。</p>
+<p><strong>王贵平（25:07）：</strong> 好，我留个邮箱，到时候结果你可以发邮箱不呢？</p>
+<p><strong>胡督察（25:13）：</strong> 我直接给你打电话了嘛。</p>
+<p><strong>王贵平（25:14）：</strong> 打电话还是麻烦。</p>
+<p><strong>胡督察（25:16）：</strong> 好，你还有其它电话没有没嘛？我多记一个。</p>
+<p><strong>王贵平（25:18）：</strong> 电话，唉算，就这个电话。</p>
+<p><strong>胡督察（25:22）：</strong> 就这个电话，13885444983。</p>
+<p><strong>王贵平（25:27）：</strong> 唉。</p>
+<p><strong>胡督察（25:27）：</strong> 就跟那个12389投诉那个一样的呢嘛，一个电话呢嘛。唉包括就是这样讲的，自家长个心眼。你不要说是法院，它是进行判决，公安机关提出它的证据之后，你就把它不要当成公安机关，你就把当成有个当事人 。你们在进行那个法院庭审的时候，对方提出的一些证据支撑，你可以进行反驳的，啊你提供你的相应证据支撑，对不对？</p>
+<p><strong>王贵平（25:54）：</strong> 啊，好好好。</p>
+<p><strong>胡督察（25:54）：</strong> 你现在跟我讲，我咋，我给你处理不到这个事情，哈。我们下面只是它的程序上面这个东西，哈。</p>
+<p><strong>王贵平（26:04）：</strong> 好，那请问一下警官你咋称呼？</p>
+<p><strong>胡督察（26:07）：</strong> 我姓胡。</p>
+<p><strong>王贵平（26:09）：</strong> 胡啥名字呀？</p>
+<p><strong>胡督察（26:09）：</strong> 诶，我胡阳。</p>
+<p><strong>王贵平（26:12）：</strong> 唉好，谢谢哈。</p>
+<p><strong>胡督察（26:12）：</strong> 没得，嗯。好，反正我尽力办，哈。这两天我在看，本来年底了我实际上事情也多，我就看抽个时间走看守所去调一下你的健康档案啊这些，正好你送过来了嘛，嘿。</p>
+<p><strong>王贵平（26:27）：</strong> 麻烦了，</p>
+<p><strong>王贵平（26:28）：</strong> 好，没得。</p>
+<p><strong>王贵平（26:28）：</strong> 谢谢。</p>
+
+
+<!-- 添加锚点 -->
+<section id="section-20241231-212357">
+    <p><strong>2024年12月31日（2024-12-31 21：23：57）与胡督察通话记录</strong></p>
+    <p><strong>通话录音</strong></p>
+</section>
+
+<p>督察：那天你过来说的是他们没有给你寄家属通知书的问题，是吧？</p>
+<p>王贵平：就是一个拘留通知书，还有一个逮捕通知书。</p>
+<p>督察：因为他那个情况我现在给你打电话，给你回访，告知你一下。针对之前反映的就是那个家属通知书的问题，因为他们派出所呢，然后我查了他们案件卷宗材料，他们是通过邮寄的形式，以挂号信的方式寄你父亲的。</p>
+<p>王贵平：我父亲到这个时候一直没收到呢。</p>
+<p>督察：它这个上面是有邮戳的嘛，是有记录的，哎。至于当时你家里面是啥子原因没有收到的，这个就确实我就给你答复不了了。但是他这个确实东西是寄出来的，通过挂号信寄的，哎。</p>
+<p>王贵平：寄的，他是寄我户籍地，还是寄在这个龙里这边来？</p>
+<p>督察：龙里龙里。</p>
+<p>王贵平：龙里，为什么我这里没有收到，这个问题就有点……</p>
+<p>督察：他这个，是因为现在，至于你们那边是到为啥没有收，或者说送到没有收这种情况我不晓得，但是看程序上讲，他们是送出去了的，有挂号信有邮戳的，啊。</p>
+<p>王贵平：有挂号信那个回执有没嘛？</p>
+<p>督察：呃，他这个东西，这个东西，哦现在所里面恐怕，因为发的判决的话，你查档案，全部交给法院了的。啊。</p>
+<p>王贵平：你的意思是说，你的意思说回执那些都交给法院了是不是啊？</p>
+<p>督察：如果是案件卷宗材料，移送起诉的时候，案件卷宗材料会一并移送，啊。</p>
+<p>王贵平：哎，我是问的是你说那个挂号信寄通知书的事情呢，那个回执应该是有的啊。</p>
+<p>督察：所以我给你讲的，如果是你按照卷宗纸质的卷宗，他们会随案移交，移送起诉的时候，所以说纸质卷宗在这个地方，在我这没得，我只是看到网上有这个记录和照片。</p>
+<p>王贵平：哦。</p>
+<p>督察：然后你反映还有刑讯逼供的问题，因为时间较久，你19年的事情了，现在隔了6年了，哎所以说，当时所里面办案区的监控复原不了了的，所以就那天来的时候我已经告知了你，这种情况下我跟你核实不清楚，啊。然后你那个笔录里面你也谈了，就是说在当时笔录里面你有签字按印的，你在抢他手机的时候打对方造成的受伤，但这个东西我现在不多的给你一个解释呢嘛，因为笔录材料上面你签字捺印的，主要就是监控探头，但我已经调不到了，已经被覆盖的了。</p>
+<p>王贵平：监控调不到，问题是手机是从哪里来的喽？</p>
+<p>督察：所以我给你讲的，因为至于你这个手机，你是那着证据排斥，那天你来我都跟你说的很好的嘛哈，至于你说他这个东西，你认为不是抢夺，它是法院在判，并不是说我来给你催促裁判。</p>
+<p>王贵平：哦，好。</p>
+<p>督察：第三的个，因为你那个随身物品登记台账这一块，公安机关～办，我们这个内部呢嘛，属于违法犯罪嫌疑人进入办案场所，会对随身财物进行过登记，但是上面只登记了你有一个工商银行的银行卡，上面也有你签字捺印，这个东西现在我也给你认不到，比如给你讲的，当时讲已经覆盖了的，所以我看不到当时你有那些东西，但是上面你签字了的东西，所以我只能说是，按照你签字的随身物品材料登记表来进行核实，哈。</p>
+<p>王贵平：呃这个签字它并不代表有事实啊。这个事实那些……</p>
+<p>督察：我现在只能是认定这个东西，啊。当时那个监控都没有了的，我当时又不在现场，我晓得上有哪些东西，对不对？我不清楚嘛。我现在只能是通过你们当时签的这个东西来认定，好不好？</p>
+<p>王贵平：哦，就是那个我……没有收到逮捕通知书和拘留通知书，可以补送不呢？</p>
+<p>督察：如果你需要这个东西，你可以去所里面喊他们再给你打印一份好不好？</p>
+<p>王贵平：就是在派出所吧？</p>
+<p>督察：呃，对。</p>
+<p>王贵平：哦，好好。</p>
+<p>督察：可以再生成再打出来的，但是因为现在，因为现在卷宗材料是自己移送了的，所以说现在我也我也只能说看有一个记录，哈。</p>
+<p>王贵平：好好麻烦了啊。</p>
+<p>督察：没得。</p>
         </section>
+        
         <!-- 其他正文内容 -->
     </main>
 </body>
