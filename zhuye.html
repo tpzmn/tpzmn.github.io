@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>王贵平案时间轴</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#4F46E5',
+                            secondary: '#7C3AED',
+                            neutral: {
+                                100: '#F3F4F6',
+                                200: '#E5E7EB',
+                                300: '#D1D5DB',
+                                400: '#9CA3AF',
+                                500: '#6B7280',
+                                600: '#4B5563',
+                                700: '#374151',
+                                800: '#1F2937',
+                                900: '#111827'
+                            }
+                        },
+                        fontFamily: {
+                            inter: ['Inter', 'system-ui', 'sans-serif']
+                        }
+                    }
+                }
+            };
+        </script>
+        <style type="text/tailwindcss">
+            @layer utilities {
+                .content-auto {
+                    content-visibility: auto;
+                }
+                .timeline-line {
+                    @apply absolute left-3.5 top-0 bottom-0 w-0.5 bg-neutral-200;
+                }
+                .timeline-circle {
+                    @apply absolute left-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300;
+                }
+                .timeline-content {
+                    @apply opacity-0 pointer-events-none transform scale-95 max-h-0 overflow-hidden transition-all duration-500 ease-in-out;
+                    transition-property: opacity, max-height, transform;
+                }
+                .timeline-content.active {
+                    @apply opacity-100 pointer-events-auto transform scale-100 max-h-[2000px];
+                }
+                .time-node {
+                    @apply relative pl-10 py-4 cursor-pointer outline-none;
+                }
+                .time-node:focus-visible .timeline-circle {
+                    @apply ring-2 ring-offset-2 ring-primary;
+                }
+                .time-node.active .timeline-circle {
+                    @apply bg-primary border-primary text-white;
+                }
+                .time-node:not(.active) .timeline-circle {
+                    @apply bg-white border-neutral-300 text-neutral-400;
+                }
+                .time-node:not(.active):hover .timeline-circle {
+                    @apply border-primary text-primary;
+                }
+                /* 横向时间轴（移动端） */
+                @media (max-width: 767px) {
+                    .timeline-scroll {
+                        @apply flex flex-row overflow-x-auto space-x-4 pb-2;
+                    }
+                    .timeline-line {
+                        @apply hidden;
+                    }
+                    .time-node {
+                        @apply pl-0 min-w-[160px] flex-shrink-0;
+                    }
+                    .timeline-circle {
+                        @apply static left-0 top-0 -translate-y-0 mb-2;
+                    }
+                }
+            }
+        </style>
+    </head>
+    <body class="bg-neutral-100 font-inter text-neutral-800 min-h-screen">
+        <!-- 顶部导航 -->
+        <header class="bg-white shadow-sm sticky top-0 z-20">
+            <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+                <!-- Logo与标题 -->
+                <div class="flex items-center space-x-3 mt-2 md:mt-0">
+                    <a href="https://github.com/tpzmn/tpzmn.github.io/index.html" class="flex items-center hover:scale-110 transition-transform" title="天平啄木鸟">
+                        <img src="https://github.com/tpzmn/tpzmn.github.io/images/天平啄木鸟.png" alt="天平啄木鸟 Logo" class="w-8 h-8 object-contain rounded" />
+                        <span class="ml-2 text-2xl font-extrabold tracking-tight text-neutral-800">天平啄木鸟</span>
+                    </a>
+                </div>
+                <!-- 快捷链接 -->
+                <nav class="flex-1 flex flex-wrap justify-center gap-2 md:gap-4 mt-2 md:mt-0">
+                    <a href="F:\tpzmn\tpzmn.github.io\FormalResponseApplication.html" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">正式回应申请</a>
+                    <a href="https://tpzmn.github.io/Dossier.html" target="_blank" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">卷宗资料表格</a>
+                    <a href="G:\天平啄木鸟再审\project - assets\手稿\公安阶段正式回应请求.html" target="_blank" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">公安正式回应请求</a>
+                    <a href="https://myphone168.github.io/" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">再审申请书</a>
+                    <a href="https://tpzmn.github.io/PostReleaseVisit.html" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">释后之访羁押侦查篇</a>
+                    <a href="https://tpzmn.github.io/" target="_blank" class="px-4 py-2 rounded-lg bg-neutral-100 hover:bg-primary/10 text-primary font-medium transition">全案脉络</a>
+                </nav>
+            </div>
+            <!-- 个人信息与社交 -->
+            <div class="bg-neutral-50 border-t border-neutral-200">
+                <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+                    <div class="flex items-center space-x-6 mt-2 md:mt-0">
+                        <span class="text-xs text-neutral-500">你所在位置：<span class="font-medium text-primary">天平啄木鸟的主页</span></span>
+                    </div>
+                    <!-- 社交媒体链接右对齐 -->
+                    <div class="flex justify-end w-full md:w-auto space-x-3 mt-2 md:mt-0">
+                        <a href="https://weixin.qq.com/" class="hover:scale-110 transition-transform" title="微信">
+                            <img src="https://github.com/tpzmn/tpzmn.github.io/images/微信.png" alt="微信" class="w-6 h-6 object-contain rounded" />
+                        </a>
+                        <a href="https://www.douyin.com/" class="hover:scale-110 transition-transform" title="抖音">
+                            <img src="https://github.com/tpzmn/tpzmn.github.io/images/抖音.png" alt="抖音" class="w-6 h-6 object-contain rounded" />
+                        </a>
+                        <a href="https://www.kuaishou.com/" class="hover:scale-110 transition-transform" title="快手">
+                            <img src="https://github.com/tpzmn/tpzmn.github.io/images/快手.png" alt="快手" class="w-6 h-6 object-contain rounded" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容 -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b border-neutral-200">
+                    <h2 class="text-2xl font-bold text-neutral-800">（2019）黔0103刑初821号刑事案件发展脉络</h2>
+                    <p class="text-neutral-500 mt-1">令人匪夷所思的奇葩案件</p>
+                </div>
+                <div class="flex flex-col md:flex-row">
+                    <!-- 左侧内容区 -->
+                    <div class="w-full md:w-2/3 p-6 border-b md:border-b-0 md:border-r border-neutral-200 transition-all duration-500" id="contentView" aria-live="polite" style="min-height:320px;">
+                        <!-- 内容由JS动态插入 -->
+                    </div>
+                    <!-- 右侧时间轴 -->
+                    <div class="w-full md:w-1/3 p-6 overflow-x-auto md:overflow-y-auto max-h-[70vh]">
+                        <div class="relative timeline-scroll md:block">
+                            <div class="timeline-line"></div>
+                            <div class="time-node active" data-content="content1" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-dot-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月31日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">胡督察以电话方式回访的奥秘</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content34" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月25日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">和林筑萍通电话</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content2" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月18日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">以电话诱骗制造程序空转、以证据筛选掩盖实体违法</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content3" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月16日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">重演故意造假</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content33" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月12日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">二审法院来电、检察院来电</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content32" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年12月6日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">通过贵州110报警</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content35" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月28日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">去一审档案室查“正卷1”缺失内容被设阻</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content4" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月21日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">寄回（2019）黔01刑终669号补正裁定【落款日期2024年11月8日</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content31" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月15日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">发现能证实王贵平2019年1月20日前使用OPPO A5的新证据</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content7" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月13日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">待填事项1</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content30" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月8日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">林筑萍强令领取补正裁定书</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content29" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月5日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">一审档案室拷贝“正卷1”</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content28" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年11月4日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">发现二审附卷裁定书问题</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content27" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2024年2月5日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">出院</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content26" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2023年6月30日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">住院治疗</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content25" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2023年1月20日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">释放出狱</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content24" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年10月14日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">执行刑罚</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content23" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年8月27日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">发裁定书</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content22" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年8月20日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">二审提讯</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content21" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年8月1日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">发判决书</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content20" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年7月2日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">一审开庭</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content19" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年6月14日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">一次性发起诉书等文书</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content18" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年4月3日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">检查阶段第二次提讯</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content17" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年3月27日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">检查阶段第一次提讯</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content16" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年3月19日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">侦查终结</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content15" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年3月19日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">侦查终结</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content14" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月30日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">逮捕日期</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content8" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月21日22是50分</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">送羁超法定时限【刑事拘留】</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content13" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月21日14时左右</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">云岩区人民医院体检</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content12" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月21日7时左右</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">初步达到目的后让吃早餐</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content11" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月21日6时左右</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">讯问室外签多份不知情文书</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content10" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月21日0时至次日6时</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">讯问时做笔录趁人之危</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content9" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月20日21时至次日0时</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">暴力执法，预谋假案</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content5" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2019年1月20日18时至19时</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">OPPO A5手机奇葩故事的起点</p>
+                                </div>
+                            </div>
+                            <div class="time-node" data-content="content6" tabindex="0">
+                                <div class="timeline-circle">
+                                    <i class="fa fa-circle-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-neutral-800">2018年1月20日</h4>
+                                    <p class="text-sm text-neutral-500 mt-1">王贵平的OPPO A5手机购机日</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- 页脚 -->
+        <footer class="bg-white border-t border-neutral-200 mt-12">
+            <div class="bg-neutral-50 border-t border-neutral-200">
+                <div class="container mx-auto px-4 py-8">
+                    <div class="text-center text-sm text-neutral-500">
+                        &copy; 2025 天平啄木鸟. 保留所有权利.
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script>
+            // 数据结构优化：分离时间轴节点数据和内容数据
+            const timelineData = [
+                {
+                    id: 'content1',
+                    date: '2024年12月31日',
+                    type: '胡督察以电话方式回访的奥秘',
+                    icon: 'fa-rocket',
+                    color: 'primary',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                <i class="fa fa-rocket text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2024年12月31日</h3>
+                                <p class="text-neutral-500 mt-1">胡督察以电话方式回访的奥秘</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">胡督察以电话方式回访的奥秘</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                    <span>规避法定书面回复义务</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                    <span>回避核心违法事实调查</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                    <span>以非正式程序延续内部包庇</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/feature1/600/400" alt="深度思考功能截图" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">超长文本分析界面</p>
+                                </div>
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/feature2/600/400" alt="观点提炼功能截图" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">自动生成内容摘要</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content2',
+                    date: '2024年12月18日',
+                    type: '以电话诱骗制造程序空转、以证据筛选掩盖实体违法',
+                    icon: 'fa-pencil',
+                    color: 'secondary',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+                                <i class="fa fa-pencil text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2024年12月18日</h3>
+                                <p class="text-neutral-500 mt-1">以电话诱骗制造程序空转、以证据筛选掩盖实体违法</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">‘承诺 - 推诿 - 拒收’的闭环操作</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+                                    <span>电话承诺、现场推诿、敷衍塞责走过场</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+                                    <span>督察选择性执法、签字即 “事实”、极力掩饰不法办案问题</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+                                    <span>避重就轻司法难公</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6">
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/writing/800/400" alt="录音资料" class="w-full h-64 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">有录音证据哦</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content3',
+                    date: '2024年12月16日',
+                    type: '重演故意造假',
+                    icon: 'fa-bolt',
+                    color: 'green-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500">
+                                <i class="fa fa-bolt text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2024年12月16日</h3>
+                                <p class="text-neutral-500 mt-1">重演故意造假</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">故意造假详情</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>违法回避原则，而依法告知向有权机关处理</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>笔录用词不准难掩之前不法办案事实，制作询问通知书问题揭露非正式问题，走形式的敷衍目的</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>报案人联系信息造假将问题暴露无遗</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-lg p-4 border border-neutral-200">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-medium text-neutral-600">旧版本响应时间</span>
+                                    <span class="text-lg font-bold text-red-500">2.5秒</span>
+                                </div>
+                                <div class="h-2 bg-neutral-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-red-500" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-neutral-200">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-medium text-neutral-600">新版本响应时间</span>
+                                    <span class="text-lg font-bold text-green-500">0.9秒</span>
+                                </div>
+                                <div class="h-2 bg-neutral-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500" style="width: 36%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content4',
+                    date: '2024年11月21日',
+                    type: '新功能预览',
+                    icon: 'fa-eye',
+                    color: 'blue-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                <i class="fa fa-eye text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2024年11月21日寄回补正裁定【落款日期2024年11月8日】</h3>
+                                <p class="text-neutral-500 mt-1">「图像生成」功能预览，支持多模态交互</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">功能预览</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>图1，问题满满。【IMG_20241121_095501.jpg】</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>图像编辑：修改现有图像，添加文字或元素</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>多模态对话：支持上传图像并基于图像内容进行对话</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="images/IMG_20241121_095501.jpg" alt="送达回证" class="w-full h-40 object-cover">
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/aiimg2/300/300" alt="AI生成图像示例2" class="w-full h-40 object-cover">
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/aiimg3/300/300" alt="AI生成图像示例3" class="w-full h-40 object-cover">
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r">
+                            <p class="text-sm text-blue-700">
+                                <i class="fa fa-info-circle mr-2"></i>
+                                此功能目前处于内测阶段，预计3月正式上线
+                            </p>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content7',
+                    date: '2024年11月13日',
+                    type: '待填事项1',
+                    icon: 'fa-eye',
+                    color: 'blue-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                <i class="fa fa-eye text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">待填主题</h3>
+                                <p class="text-neutral-500 mt-1">「图像生成」功能预览，支持多模态交互</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">功能预览</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>图1，问题满满。【IMG_20241121_095501.jpg】</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>图像编辑：修改现有图像，添加文字或元素</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>多模态对话：支持上传图像并基于图像内容进行对话</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="images/IMG_20241121_095501.jpg" alt="送达回证" class="w-full h-40 object-cover">
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/aiimg2/300/300" alt="AI生成图像示例2" class="w-full h-40 object-cover">
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="https://picsum.photos/seed/aiimg3/300/300" alt="AI生成图像示例3" class="w-full h-40 object-cover">
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r">
+                            <p class="text-sm text-blue-700">
+                                <i class="fa fa-info-circle mr-2"></i>
+                                此功能目前处于内测阶段，预计3月正式上线
+                            </p>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content8',
+                    date: '2018年1月20日',
+                    type: '送羁日期',
+                    icon: 'fa-star',
+                    color: 'yellow-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-500">
+                                <i class="fa fa-star text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2019年1月21日</h3>
+                                <p class="text-neutral-500 mt-1">送羁超时</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-yellow-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">事件详情</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span>超24小时送看守所</span>
+                                </li>
+                            </ul>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content5',
+                    date: '2019年1月20日18时至19时',
+                    type: '界面更新',
+                    icon: 'fa-paint-brush',
+                    color: 'purple-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                <i class="fa fa-paint-brush text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2019年1月20日18时至19时</h3>
+                                <p class="text-neutral-500 mt-1">案发地点和40米远的公安岗亭</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">案发地迷雾重重</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                                    <span>投案地点公安岗亭内的监控视频缺失；</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                                    <span>抓捕民警的执法记录仪视频缺失；</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                                    <span>指控涉案OPPO A5手机来源不明。</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <a href="images/IMG_20241213_105207.jpg" target="_blank" class="block rounded-lg overflow-hidden shadow-sm border border-neutral-200 transition-transform hover:scale-105">
+                                <img src="images/IMG_20241213_105207.jpg" alt="投案地点" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">投案地点就是图中公安岗亭内</p>
+                                </div>
+                            </a>
+                            <a href="images/有翼狮金来通-这能算非法占用？.jpg" target="_blank" class="block rounded-lg overflow-hidden shadow-sm border border-neutral-200 transition-transform hover:scale-105">
+                                <img src="images/有翼狮金来通-这能算非法占用？.jpg" alt="投案地点" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">这能算非法占用？</p>
+                                </div>
+                            </a>
+                            <a href="images/IMG_20241213_124926.jpg" target="_blank" class="block rounded-lg overflow-hidden shadow-sm border border-neutral-200 transition-transform hover:scale-105">
+                                <img src="images/IMG_20241213_124926.jpg" alt="公安岗亭后面的大十字广场" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">这能算非法占用？</p>
+                                </div>
+                            </a>
+                            <a href="images/案发地点地图.png" target="_blank" class="block rounded-lg overflow-hidden shadow-sm border border-neutral-200 transition-transform hover:scale-105">
+                                <img src="images/案发地点地图.png" alt="新界面截图2" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">案发地平面图</p>
+                                </div>
+                            </a>
+                        </div>
+                    `
+                },
+                {
+                    id: 'content6',
+                    date: '2018年1月20日',
+                    type: '购机日',
+                    icon: 'fa-mobile',
+                    color: 'teal-500',
+                    content: `
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-500">
+                                <i class="fa fa-mobile text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-neutral-800">2018年1月20日</h3>
+                                <p class="text-neutral-500 mt-1">OPPO A5购机日，故事的真正起点</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-neutral-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-neutral-700">购机信息</h4>
+                            <ul class="mt-3 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-teal-500 mt-1 mr-2"></i>
+                                    <span>购机时间：2018年1月20日</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-teal-500 mt-1 mr-2"></i>
+                                    <span>机型：OPPO A5</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-teal-500 mt-1 mr-2"></i>
+                                    <span>购机地点：贵州省龙里县兴隆路专卖店</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="images/OPPO A5.png" alt="OPPO A5实物图" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">OPPO A5实物照片</p>
+                                </div>
+                            </div>
+                            <div class="rounded-lg overflow-hidden shadow-sm border border-neutral-200">
+                                <img src="images/IMG_20241115_094336.jpg" alt="购机发票" class="w-full h-48 object-cover">
+                                <div class="p-3 bg-white">
+                                    <p class="text-sm text-neutral-600">2018年11月20日16时23分09秒王贵平的OPPO A5激活证据</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r">
+                            <p class="text-sm text-teal-700">
+                                <i class="fa fa-info-circle mr-2"></i>
+                                无巧不成书，指控被抢OPPO A5手机和王贵平的手机竟是同款。
+                            </p>
+                        </div>
+                    `
+                }
+            ];
+
+            // 渲染内容区
+            const contentView = document.getElementById('contentView');
+            function renderContents() {
+                contentView.innerHTML = timelineData.map(item => `
+                    <div class="timeline-content${item.id === 'content1' ? ' active' : ''}" id="${item.id}">
+                        ${item.content}
+                    </div>
+                `).join('');
+            }
+            renderContents();
+
+            // 内容切换动画与高度自适应
+            function switchContent(targetId) {
+                const allContents = document.querySelectorAll('.timeline-content');
+                const target = document.getElementById(targetId);
+
+                // 1. 记录当前高度
+                const prevActive = document.querySelector('.timeline-content.active');
+                const prevHeight = prevActive ? prevActive.offsetHeight : 0;
+                const nextHeight = target ? target.scrollHeight : 0;
+
+                // 2. 先移除所有active
+                allContents.forEach(c => {
+                    c.classList.remove('active');
+                    c.style.transition = 'none';
+                    c.style.opacity = '0';
+                    c.style.transform = 'scale(0.98)';
+                    c.style.maxHeight = '0px';
+                    c.style.pointerEvents = 'none';
+                });
+
+                // 3. 设置容器min-height动画，防止跳动
+                contentView.style.transition = 'min-height 0.4s cubic-bezier(.4,0,.2,1)';
+                contentView.style.minHeight = prevHeight + 'px';
+
+                // 4. 强制reflow
+                void contentView.offsetWidth;
+
+                // 5. 激活目标内容
+                if (target) {
+                    target.classList.add('active');
+                    target.style.transition = 'none';
+                    target.style.opacity = '0';
+                    target.style.transform = 'scale(0.98)';
+                    target.style.maxHeight = '0px';
+                    target.style.pointerEvents = 'auto';
+
+                    // 6. 动画过渡
+                    setTimeout(() => {
+                        target.style.transition = 'opacity 0.4s, transform 0.4s, max-height 0.5s';
+                        target.style.opacity = '1';
+                        target.style.transform = 'scale(1)';
+                        target.style.maxHeight = nextHeight + 'px';
+                        // 容器高度平滑过渡
+                        contentView.style.minHeight = nextHeight + 'px';
+                    }, 10);
+
+                    // 7. 动画结束后，移除max-height限制
+                    setTimeout(() => {
+                        target.style.maxHeight = '';
+                        contentView.style.minHeight = '';
+                    }, 500);
+                }
+            }
+
+            // 时间节点事件
+            document.querySelectorAll('.time-node').forEach(node => {
+                node.addEventListener('click', () => {
+                    // 重置所有节点状态
+                    document.querySelectorAll('.time-node').forEach(n => n.classList.remove('active'));
+                    node.classList.add('active');
+                    // 切换内容
+                    switchContent(node.dataset.content);
+                    // 内容区滚动到顶部
+                    contentView.scrollTop = 0;
+                });
+                // 键盘支持
+                node.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        node.click();
+                    }
+                });
+            });
+
+            // 初始加载动画
+            document.addEventListener('DOMContentLoaded', () => {
+                contentView.style.opacity = '0';
+                setTimeout(() => {
+                    contentView.style.opacity = '1';
+                    contentView.style.transition = 'opacity 0.5s ease-in-out';
+                }, 300);
+            });
+        </script>
+    </body>
+</html>
