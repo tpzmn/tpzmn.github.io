@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程序违法与证据伪造全记录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "仿宋", "FangSong", "SimSun", serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 60px;
+            padding-top: 80px;
+        }
+
+        /* 顶部信息栏 - 屏幕显示 */
+        .header-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .timestamp {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .title {
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* 打印按钮 */
+        .print-button {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background-color: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background-color: #0d4a9e;
+        }
+
+        /* 主体内容区 */
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content p {
+            text-indent: 2em;
+            margin-bottom: 15px;
+            line-height: 2;
+            text-align: justify;
+            font-size: 16px;
+        }
+
+        .content h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        /* 底部信息栏 - 屏幕显示 */
+        .footer-screen {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .source-path {
+            font-size: 13px;
+            color: #555;
+            max-width: 70%;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            hyphens: manual;
+        }
+
+        @media print {
+            .source-path {
+                word-break: break-word;
+                overflow-wrap: anywhere;
+                white-space: pre-line;
+                max-width: calc(100% - 4em);
+                margin-right: 2em;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            body {
+                padding: 0;
+                background: none;
+            }
+
+            .header-screen, .footer-screen, .print-button {
+                display: none;
+            }
+
+            .content {
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+                box-shadow: none;
+            }
+
+            /* 页眉 */
+            @page {
+                margin: 2cm 2cm 2.5cm 2cm;
+
+                @top-left {
+                    content: counter(author) " | " counter(date);
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: bottom;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #ccc; /* 页眉分割线 */
+                }
+
+                @top-right {
+                    content: "案件记录";
+                    font-size: 14px;
+                    font-weight: bold;
+                    text-decoration: underline;
+                    vertical-align: bottom;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #ccc; /* 页眉分割线 */
+                }
+
+                @bottom-left {
+                    content: "记录人：张三";
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: top;
+                    padding-top: 5px;
+                    white-space: pre-wrap;
+                    border-top: 1px solid #ccc; /* 页脚分割线 */
+                }
+
+                @bottom-right {
+                    content: "第" counter(page) "页 共" counter(pages) "页";
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: top;
+                    padding-top: 5px;
+                    border-top: 1px solid #ccc; /* 页脚分割线 */
+                }
+            }
+        }
+
+        /* 公文样式增强 */
+        .document-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+        }
+
+        .signature p {
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sub-section {
+            margin-left: 2em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部信息栏 - 屏幕显示 -->
+    <div class="header-screen">
+        <div class="timestamp" id="timestamp">2025年6月7日 10:15:30</div>
+        <div class="title" id="documentTitle">程序违法与证据伪造全记录</div>
+    </div>
+
+    <!-- 打印按钮 - 仅屏幕显示 -->
+    <button class="print-button" onclick="window.print()">打印</button>
+
+    <!-- 主体内容区 -->
+    <div class="content">
+        <h1 class="document-title" id="contentTitle">程序违法与证据伪造全记录</h1>
+
+        <div class="section">
+            <p>案件编号：云检公诉刑诉（2019）3711号</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">一、关键新证据：王贵平案前持有 OPPO A5 手机</div>
+            <div class="sub-section">
+                <p>（一）手机归属铁证</p>
+                <p>王贵平提供 2018 年 10 月 OPPO A5 手机激活记录（附购机凭证），证明案发前（2019 年 1 月）已合法持有该手机，与指控 “抢劫所得” 完全矛盾。</p>
+                <p>（二）证据矛盾点</p>
+                <p>1. 卷宗未附手机实物、照片或来源鉴定报告，违反《刑事诉讼法》第 50 条 “证据确实充分” 原则。</p>
+                <p>2. 一审庭审播放的抓捕监控显示，王贵平被控制时手机在裤兜内（非抢夺状态），与起诉书 “当场抓获抢劫现行” 描述冲突。</p>
+                <p><strong>影响：直接动摇抢劫罪指控的核心物证基础，涉嫌证据伪造或隐匿关键反证。</strong></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">二、案件背景</div>
+            <p>本案件记录了2019年至2024年期间，王贵平案件中存在的多处程序违法与证据伪造问题，旨在全面还原事实真相，追究相关责任，为案件的公正处理提供有力依据。</p>
+            <p>******</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">三、程序违法</div>
+            <div class="sub-section">
+                <p>（一）超期送羁</p>
+                <p>1. 时间线还原：2019年1月20日19时王贵平被带至毓秀路派出所，至2019年1月21日22时50分才被送达看守所，滞留派出所近28小时，违反《中华人民共和国刑事诉讼法》第八十五条"至迟不得超过二十四小时送羁"规定。</p>
+                <p>2. 法律依据冲突：《中华人民共和国刑事诉讼法》第八十五条明确拘留后应立即送羁，无"特殊情况"例外。派出所未援引"危害国家安全/恐怖活动犯罪"例外，属程序严重违法。</p>
+                <p>（二）派出所扣留期间的非法行为</p>
+                <p>1. 时间线还原：2019年1月21日22时50分至2019年1月22日08时，王贵平在看守所被扣留期间，在派出所内进行非法行为，如：</p>
+                <p>2. 虚假供述与文书签署：2019年1月21日6时，王贵平被迫签署不知情文书；7时30分首次进食，印证饥饿逼供。看守所健康档案第25页虚构"抢劫自伤"情节，与一审庭审播放案发过程监控矛盾，涉嫌《中华人民共和国刑法》第二百四十七条暴力取证罪。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">四、证据问题</div>
+            <div class="sub-section">
+                 <p>（一）关键证据灭失</p>
+                 <p>1. 监控与执法记录仪视频：公安岗亭内抓捕过程、随身物品检查记录被隐匿，违反《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号）第十三条"刑事案件视频永久保存"。捕警执法记录仪内容未随卷移送，属《公安机关刑事案卷立卷规范》（公法〔2014〕1080号）第二部分"证据材料卷"缺失。</p>
+                 <p>2. 卷宗完整性破坏：云岩区法院"正卷1"缺失立案审批表、讯问笔录、物证（OPPO手机）、鉴定意见等9类法定材料（《人民法院诉讼档案管理办法》（法〔2013〕283号）的附件1《人民法院诉讼文书材料立卷规范》第八条），涉嫌掩盖刑讯证据。</p>
+                 <p>（二）物证矛盾与伪造</p>
+                 <p>1. OPPO手机来源争议：指控"抢劫手机"无实物/照片，王贵平提供2018年激活记录（案发前持有），违反《中华人民共和国刑事诉讼法》第五十条"证据确实充分"原则。</p>
+                 <p>2. 伤情证据矛盾：健康档案虚构"抢劫自伤"，但从人体伤情标识图来看，物理上无法自击背部+眼部+双手，逻辑漏洞明显。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">五、上下级联动的推责闭环</div>
+            <div class="sub-section">
+                <p>（一）*********</p>
+                <p>1.*********"*********"*********"*********"*********""</p>
+                <p>2. *********"*********"*********"*********"*********""</p>
+                <p>（二）*********"*********"*********"*********"*********""</p>
+                <p>1. *********"*********"*********"*********"*********""</p>
+                <p>2. *********"*********"*********"*********"*********""</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">六、程序违法清单</div>
+            <div class="sub-section">
+                <p>1. 超期送羁28小时（《中华人民共和国刑事诉讼法》第八十五条）；</p>
+                <p>2. 暴力取证与饥饿逼供（《中华人民共和国刑法》第二百四十七条、《最高人民法院关于建立健全防范刑事冤假错案工作机制的意见》（第8条））；</p>
+                <p>3. 隐匿监控及执法记录仪视频（《公安机关现场执法视音频记录工作规定》（公通字〔2016〕14号）第十三条）；</p>
+                <p>4. 拘留/逮捕通知书未送达（《中华人民共和国刑事诉讼法》第八十五条通知义务）；</p>
+                <p>5. 卷宗核心材料缺失（《人民法院诉讼档案管理办法》（法〔2013〕283号）的附件1《人民法院诉讼文书材料立卷规范》第八条）；</p>
+                <p>6. 报案回执信息篡改（《公安机关办理刑事案件程序规定》（公安部令〔2020〕第159号）第六十一条）；</p>
+                <p>7. 信访答复程序违法（《公安机关信访工作规定》（公安部令〔2005〕第79号）第二十二条书面反馈义务）。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">七、问题清单</div>
+            <div class="sub-section">
+                <p>1. 超期送羁28小时（《中华人民共和国刑事诉讼法》第八十五条）；</p>
+                <p>2. 暴力取证与饥饿逼供（《中华人民共和国刑法》第二百四十七条、《最高人民法院关于建立健全防范刑事冤假错案工作机制的意见》（第8条））；</p>
+                <p>3. 隐匿监控及执法记录仪视频（《公安机关现场执音频记录工作规定》（公通字〔2016〕14号）第十三条）；</p>
+                <p>4. 拘留/逮捕通知书未送达（《中华人民共和国刑事诉讼法》第八十五条通知义务）；</p>
+                <p>5. 卷宗核心材料缺失（《人民法院诉讼档案管理办法》（法〔2013〕283号）的附件1《人民法院诉讼文书材料立卷规范》第八条）；</p>
+                <p>6. 报案回执信息篡改（《公安机关办理刑事案件程序规定》（公安部令〔2020〕第159号）第六十一条）；</p>
+                <p>7. 信访答复程序违法（《公安机关信访工作规定》（公安部令〔2005〕第79号）第二十二条书面反馈义务）。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">八、追责依据</div>
+            <div class="sub-section">
+                <p>1. 刑事责任：派出所工作人员涉嫌《中华人民共和国刑法》第二百三十四条（故意伤害）、第二百四十七条（暴力取证）、第三百九十七条（滥用职权）。</p>
+                <p>2. 监督路径：依据《中华人民共和国刑事诉讼法》第一百一十七条（申诉控告权）、《人民检察院刑事诉讼规则》（高检发释字〔2019〕4号）第五百七十七条（侦查活动监督）。</p>
+                <p>3. 证据补正：要求调取公安岗亭监控、捕警执法记录仪视频，核实OPPO手机激活记录（附2018年购机凭证）。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">九、正式书面回应的必要性</div>
+            <div class="sub-section">
+                <p>1. ******</p>
+                <p>2. ******</p>
+                <p>3. ******</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">十、附件</div>
+            <div class="sub-section">
+                <p>1. ******</p>
+                <p>2. ******</p>
+                <p>3. ******</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">十一、援引法条</div>
+            <div class="sub-section">
+                <p>1. *****</p>
+                <p>2. *****</p>
+                <p>3. *****</p>
+            </div>
+        </div>
+
+        <!-- 底部信息栏 - 屏幕显示 -->
+    <div class="footer-screen">
+        <div class="source-path" id="sourcePath">来源：</div>
+    </div>
+
+    <script>
+        // 更新时间戳
+        function updateTimestamp() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById('timestamp').textContent =
+                `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+        }
+
+        // 动态设置来源路径（使用完整URL）
+        function setSourcePath() {
+            const fullUrl = window.location.href;
+            document.getElementById('sourcePath').textContent = `来源：${fullUrl}`;
+            return fullUrl;
+        }
+
+        // 动态设置文档标题
+        function setDocumentTitle() {
+            const title = "程序违法与证据伪造全记录";
+            document.getElementById('documentTitle').textContent = title;
+            document.getElementById('contentTitle').textContent = title;
+            return title;
+        }
+
+        // 初始化
+        function init() {
+            updateTimestamp();
+            const path = setSourcePath();
+            const title = setDocumentTitle();
+
+            setInterval(updateTimestamp, 1000);
+            setupPrintStyles(title, path);
+        }
+
+        // 设置打印样式
+        function setupPrintStyles(title, path) {
+            const oldStyle = document.getElementById('print-styles');
+            if (oldStyle) oldStyle.remove();
+
+            const style = document.createElement('style');
+            style.id = 'print-styles';
+            style.textContent = `
+                @media print {
+                    @page {
+                        margin: 2cm 2cm 2.5cm 2cm;
+                        size: A4;
+
+                        @top-left {
+                            content: "打印时间：${document.getElementById('timestamp').textContent}";
+                            border-bottom: 1px solid #ccc !important;
+                            padding-bottom: 5px;
+                            vertical-align: bottom;
+                            font-size: 12px;
+                        }
+
+                        @top-right {
+                            content: "${title}";
+                            border-bottom: 1px solid #ccc !important;
+                            padding-bottom: 5px;
+                            vertical-align: bottom;
+                            font-size: 14px;
+                        }
+
+                        @bottom-left {
+                            content: "来源：${path}";
+                            border-top: 1px solid #ccc !important;
+                            padding-top: 5px;
+                            vertical-align: top;
+                            width: 60%;
+                            white-space: pre-wrap;
+                            font-size: 12px;
+                        }
+
+                        @bottom-right {
+                            content: "第" counter(page) "页 共" counter(pages) "页";
+                            border-top: 1px solid #ccc !important;
+                            padding-top: 5px;
+                            vertical-align: top;
+                            font-size: 12px;
+                        }
+                    }
+
+                    /* 确保所有页面都应用相同的样式 */
+                    @page :first {
+                        @top-left, @top-right {
+                            border-bottom: 1px solid #ccc !important;
+                        }
+                    }
+
+                    @page :left, @page :right {
+                        @top-left, @top-right {
+                            border-bottom: 1px solid #ccc !important;
+                        }
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 打印前更新样式
+        window.onbeforeprint = function() {
+            updateTimestamp();
+            const path = setSourcePath();
+            const title = setDocumentTitle();
+            setupPrintStyles(title, path);
+        };
+
+        // 初始化页面
+        window.onload = init;
+    </script>
+</body>
+</html>
