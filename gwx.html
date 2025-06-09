@@ -281,6 +281,39 @@
             word-break: break-all;
             overflow-wrap: break-word;
         }
+
+        /* 放在 setupPrintStyles 的 style.textContent 内 */
+        @media print {
+            .print-qrcode-container {
+                display: flex !important;
+                position: fixed !important;
+                right: 2.2cm !important;
+                bottom: -0.8cm !important; /* 负值让二维码紧贴页脚下方 */
+                z-index: 9999 !important;
+                width: auto !important;
+                height: auto !important;
+                pointer-events: none !important;
+                background: none !important;
+                box-shadow: none !important;
+                justify-content: flex-end !important;
+                align-items: flex-start !important;
+            }
+            .print-qrcode-img {
+                width: 48px !important;
+                height: 48px !important;
+                object-fit: contain !important;
+                background: #fff !important;
+                border: 1px solid #ccc !important;
+                border-radius: 4px !important;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+                margin: 0 !important;
+            }
+        }
+        @media screen {
+            .print-qrcode-container {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -459,8 +492,25 @@
             const path = setSourcePath();
             const title = setDocumentTitle();
 
+            // 页面加载时就创建二维码容器
+            let qr = document.getElementById('print-qrcode');
+            if (!qr) {
+                qr = document.createElement('div');
+                qr.id = 'print-qrcode';
+                qr.className = 'print-qrcode-container';
+                qr.innerHTML = `
+                    <img class="print-qrcode-img" 
+                         src="https://tpzmn.github.io/images/jwx%E9%98%B2%E4%BC%AA%E6%A0%87%E8%AF%86.png" 
+                         onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AkEEjQhJzVWJgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAADElEQVQ4y2NgGAWjYBSMglEwCkbBKBgFowAAADgKARnQ9v4AAAAASUVORK5CYII='"
+                         alt="二维码">
+                `;
+                document.body.appendChild(qr);
+            }
+
             setInterval(updateTimestamp, 1000);
             setupPrintStyles(title, path);
+            
+            console.log('二维码容器已初始化');
         }
 
         // 设置打印样式
@@ -511,29 +561,58 @@
                         }
                     }
 
-                    /* 确保所有页面都应用相同的样式 */
-                    @page :first {
-                        @top-left, @top-right {
-                            border-bottom: 1px solid #ccc !important;
-                        }
+                    /* 二维码定位在页码正下方 */
+                    body {
+                        position: relative;
                     }
-
-                    @page :left, @page :right {
-                        @top-left, @top-right {
-                            border-bottom: 1px solid #ccc !important;
-                        }
+                    /* 定义打印二维码容器的样式 */
+                    .print-qrcode-container {
+                        display: flex !important;
+                        position: fixed !important;
+                        right: 1cm !important; /* 与页码右对齐 */
+                        bottom: 0.1cm !important; /* 紧贴页码下方 */
+                        z-index: 9999 !important;
+                        transform: translateX(50%); /* 水平居中于页码 */
+                    }
+                    /* 定义打印二维码图像的样式 */
+                    .print-qrcode-img {
+                        width: 48px !important;
+                        height: 44px !important;
+                        border: 1px solid #ccc !important;
+                        background: white !important;
+                        padding: 2px !important;
+                    }                }
+                /* 屏幕下二维码隐藏 */
+                @media screen {
+                    .print-qrcode-container {
+                        display: none !important;
                     }
                 }
             `;
             document.head.appendChild(style);
+            console.log('打印样式已设置');
         }
 
         // 打印前更新样式
         window.onbeforeprint = function() {
+            console.log('打印前事件触发');
             updateTimestamp();
             const path = setSourcePath();
             const title = setDocumentTitle();
             setupPrintStyles(title, path);
+            
+            // 确保二维码显示
+            const qr = document.getElementById('print-qrcode');
+            if (qr) {
+                qr.style.display = 'flex';
+                console.log('二维码显示状态已设置');
+            }
+        };
+        
+        window.onafterprint = function() {
+            console.log('打印后事件触发');
+            const qr = document.getElementById('print-qrcode');
+            if (qr) qr.style.display = 'none';
         };
 
         // 初始化页面
