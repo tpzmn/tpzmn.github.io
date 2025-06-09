@@ -68,6 +68,25 @@
             background-color: #0d4a9e;
         }
 
+        /* 新增：返回主页按钮样式，与打印按钮对称 */
+        .home-button {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            background-color: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            z-index: 1000;
+        }
+
+        .home-button:hover {
+            background-color: #0d4a9e;
+        }
+
         /* 主体内容区 */
         .content {
             max-width: 800px;
@@ -136,7 +155,7 @@
                 background: none;
             }
 
-            .header-screen, .footer-screen, .print-button {
+            .header-screen, .footer-screen, .print-button, .home-button {
                 display: none;
             }
 
@@ -223,6 +242,45 @@
             margin-left: 2em;
             margin-bottom: 10px;
         }
+
+        /* 移动端优化 */
+        @media (max-width: 600px) {
+            .content {
+                padding: 10px !important;
+                max-width: 100vw !important;
+                font-size: 15px;
+            }
+            .section, .sub-section {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+            }
+            .document-title, .content h1 {
+                font-size: 18px !important;
+                padding-top: 10px !important;
+            }
+            .footer-screen, .header-screen {
+                padding: 6px 8px !important;
+                font-size: 13px !important;
+            }
+            .print-button {
+                top: 50px !important;
+                right: 10px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+            }
+            .home-button {
+                top: 50px !important;
+                left: 10px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+            }
+        }
+
+        /* 防止长文本溢出 */
+        .content, .section, .sub-section, .source-path {
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -234,7 +292,8 @@
 
     <!-- 打印按钮 - 仅屏幕显示 -->
     <button class="print-button" onclick="window.print()">打印</button>
-
+    <!-- 返回主页按钮 - 仅屏幕显示 -->
+    <button class="home-button" onclick="window.location.href='https://tpzmn.github.io'">返回主页</button>
     <!-- 主体内容区 -->
     <div class="content">
         <h1 class="document-title" id="contentTitle">程序违法与证据伪造全记录</h1>
