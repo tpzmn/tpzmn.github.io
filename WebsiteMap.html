@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>网站地图</title>
+  <style>
+    body { 
+      font-family: "微软雅黑", Arial, sans-serif; 
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #f9f9f9;
+    }
+    
+    .tree, .tree ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+    
+    .tree ul {
+      margin-left: 20px;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      max-height: 0;
+    }
+    
+    .tree ul.active {
+      max-height: 1000px;
+      transition: max-height 0.5s ease-in;
+    }
+    
+    .tree li {
+      margin: 0;
+      padding: 0 0 0 20px;
+      line-height: 28px;
+      position: relative;
+    }
+    
+    .tree li::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 8px;
+      border-left: 1px dashed #bbb;
+      bottom: 0;
+      height: 100%;
+      width: 1px;
+    }
+    
+    .tree li:last-child::before {
+      height: 14px;
+    }
+    
+    .tree span.folder, .tree span.file {
+      font-weight: normal;
+      color: #222;
+      cursor: pointer;
+      position: relative;
+      padding-left: 36px;
+      display: inline-block;
+      vertical-align: middle;
+      user-select: none;
+      border-radius: 4px;
+      padding-right: 8px;
+    }
+    
+    .tree span.folder:hover, .tree span.file:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .tree span.folder::before {
+      content: "+";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 16px;
+      color: #666;
+      font-weight: bold;
+      font-size: 16px;
+      transition: transform 0.2s;
+      text-align: center;
+    }
+    
+    .tree span.folder.open::before {
+      content: "-";
+      transform: rotate(180deg);
+    }
+    
+    .tree span.folder::after {
+      content: "📁";
+      position: absolute;
+      left: 18px;
+      top: 0;
+      font-size: 18px;
+      color: #e2b007;
+    }
+    
+    .tree span.folder.open::after {
+      content: "📂";
+    }
+    
+    .tree span.file::before {
+      content: "📄";
+      position: absolute;
+      left: 18px;
+      top: 0;
+      width: 16px;
+      color: #888;
+      font-size: 18px;
+    }
+    
+    /* 文件类型图标差异化 */
+    .tree span.file.html::before { content: "🌐"; color: #e34c26; }
+    .tree span.file.png::before { content: "🖼️"; color: #55aacc; }
+    
+    /* 去掉根节点的竖线 */
+    .tree > li::before {
+      border: none;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .tree span.folder, .tree span.file {
+        padding-left: 30px;
+      }
+      
+      .tree span.folder::after, 
+      .tree span.file::before {
+        left: 14px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center; margin-bottom: 20px;">网站地图</h2>
+  
+  <div class="tree-container" style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <ul class="tree">
+      <li>
+        <span class="folder open">tpzmn.github.io</span>
+        <ul class="active">
+          <li><span class="file html">gwmb.html</span></li>
+          <li><span class="file html">gwx.html</span></li>
+          <li><span class="file html">index.html</span></li>
+          <li><span class="file html">jsqrs.html</span></li>
+          <li>
+            <span class="folder">images</span>
+            <ul>
+              <li><span class="file png">jsqsr.png</span></li>
+              <li><span class="file png">jwx防伪标识.png</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    // 展开/折叠功能
+    document.querySelectorAll('.tree .folder').forEach(function(folder) {
+      folder.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleFolder(this);
+      });
+      
+      // 双击也可以展开/折叠
+      folder.addEventListener('dblclick', function(e) {
+        e.stopPropagation();
+      });
+    });
+    
+    // 切换文件夹状态的函数
+    function toggleFolder(folder) {
+      var nextUl = folder.nextElementSibling;
+      if (nextUl && nextUl.tagName.toLowerCase() === 'ul') {
+        nextUl.classList.toggle('active');
+        folder.classList.toggle('open');
+      }
+    }
+    
+    // 默认展开根目录
+    document.querySelectorAll('.tree > li > .folder')[0].classList.add('open');
+    document.querySelectorAll('.tree > li > ul')[0].classList.add('active');
+    
+    // 支持键盘导航
+    document.querySelectorAll('.tree span').forEach(function(node) {
+      node.tabIndex = 0;
+      
+      node.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (this.classList.contains('folder')) {
+            toggleFolder(this);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
